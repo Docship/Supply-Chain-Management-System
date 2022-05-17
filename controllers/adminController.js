@@ -5,44 +5,50 @@ const dbConnection = require("../db.js")
 // import { setTimeout } from 'timers/promises';
 
 exports.createAdminAccount = async (req, res, next) => {
-    const username = "admin5@g.com"
+    const username = "admin55@g.com"
     const password = "123456"
     const name = "bimsara"
     const role = "admin"
-    userController.createUserAccount(req, res, username, password, role).then(async (userId) => {
-        if (userId = -1) {
-            //console.log("1111")
-            return -1
-        } else {
-            //console.log("2222")
-            const sql = adminQuary.insertAdmin(userId, name)
-            try {
-                await new Promise(resolve => setTimeout(resolve, 5000));
-                dbConnection.insertExecution(sql).then((adminId) => {
-                    //console.log(adminId)
-                    res.json({
-                        message: "Admin successfully created",
-                        user: userId,
-                    });
-                    return 0
-                }).catch((error) => {
-                    res.json({
-                        message: "admin not successfully created",
-                        error: error.mesage,
-                    })
-                    return -1
-                })
-            } catch (error) {
-                await userController.deleteUserAccount(username).then(() => {
-                    res.json({
-                        message: "admin not successfully created",
-                        error: error.mesage,
-                    })
-                })
-            }
-        }
 
-    })
+    const adminSearchSql = adminQuary.findAdminByUserName(username)
+    let admins =await dbConnection.findExecution(adminSearchSql)
+
+    if (admins.length != 0) {
+        res.status(400).json({
+            message: "Username already exists"
+        })
+    }else{
+        userController.createUserAccount(req, res, username, password, role).then(async (userId) => {
+            console.log(userId)
+            if (userId == -1) {
+                //console.log("1111")
+                return -1
+            } else {
+                console.log("2222")
+                const sql = adminQuary.insertAdmin(userId, name)
+                try {
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+                    dbConnection.insertExecution(sql).then((adminId) => {
+                        //console.log(adminId)
+                        res.status(200).json({
+                            message: "Admin successfully created",
+                            user: userId,
+                        });
+                        
+                    })
+                } catch (error) {
+                    userController.deleteUserAccount(username).then(() => {
+                        res.json({
+                            message: "admin not successfully created",
+                            error: error.mesage,
+                        })
+                    })
+                }
+            }
+    
+        })
+    }
+       
     console.log("Finished execution of createAdmin Function")
 }
 
