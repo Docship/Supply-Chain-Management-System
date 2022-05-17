@@ -15,7 +15,9 @@ const { adminAuth, userAuth } = require("./auth/auth");
 // app.get("/basic", userAuth, (req, res) => res.send("User Route"));
 app.use("/login",require("./routes/login.js"))
 app.use("/admin", require("./routes/admin.js"))
-// app.use('/manager',require('./routes/manager.js'))
+app.use('/manager',require('./routes/manager.js'))
+app.use('/storekeeper',require('./routes/storekeeper.js'))
+
 // app.use("/assistant",require("./routes/assistant.js"))
 
 const PORT = 5000

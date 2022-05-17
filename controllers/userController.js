@@ -21,8 +21,6 @@ exports.createUserAccount = async (req, res, username, password, role) => {
     const userId = uniqid()
 
     let results = await dbConnection.findExecution(userSql)
-    //console.log("hhhhhhhhhh")
-    //console.log(results)
     if (results.length != 0) {
         res.status(400).json({
             message: "Username already exists"
@@ -36,9 +34,9 @@ exports.createUserAccount = async (req, res, username, password, role) => {
             return -1
         }
         try {
-            console.log(password)
+            //console.log(password)
             let hash = await bcrypt.hash(password, 10)
-            console.log(hash)
+            //console.log(hash)
             const sql = userQuary.insertUser(userId, username, hash)
             let result = await dbConnection.insertExecution(sql)
             console.log(result)
@@ -56,7 +54,6 @@ exports.createUserAccount = async (req, res, username, password, role) => {
                 httpOnly: true,
                 maxAge: maxAge * 1000,
             });
-            //res.status(201)
             return userId
         } catch (error) {
             res.status(401).json({
@@ -76,7 +73,6 @@ exports.deleteUserAccount = async (username) => {
         let result = await dbConnection.updateDeleteExecution(sql)
         return result
     } catch (error) {
-        //console.log(error)
         console.log("user account deletion failed")
         return -1
     }

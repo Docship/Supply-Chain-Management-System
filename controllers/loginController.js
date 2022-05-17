@@ -45,16 +45,16 @@ exports.login = async (req, res, next) => {
                         roleSql = assistantQuary.findAssistant(userId)
                         break;
                     case "storekeeper":
-                        roleSql = storekeeperQuary.findStorekeeper(userId)
+                        roleSql = storekeeperQuary.findStorekeeperByUserId(userId)
                         break;
                     case "manager":
-                        roleSql = managerQuary.findManager(userId)
+                        roleSql = managerQuary.findManagerByUserId(userId)
                         break;
                     default:
                         break;
                 }
                 dbConnection.findExecution(roleSql).then((roleUser) => {
-                    console.log(roleUser)
+                    console.log(roleUser.length)
                     if (roleUser.length == 0) {
                         res.status(401).json({
                             message: "Login not successful",

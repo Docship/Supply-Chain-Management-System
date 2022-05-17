@@ -11,13 +11,13 @@ exports.createAdminAccount = async (req, res, next) => {
     const role = "admin"
 
     const adminSearchSql = adminQuary.findAdminByUserName(username)
-    let admins =await dbConnection.findExecution(adminSearchSql)
+    let admins = await dbConnection.findExecution(adminSearchSql)
 
     if (admins.length != 0) {
         res.status(400).json({
             message: "Username already exists"
         })
-    }else{
+    } else {
         userController.createUserAccount(req, res, username, password, role).then(async (userId) => {
             console.log(userId)
             if (userId == -1) {
@@ -30,11 +30,11 @@ exports.createAdminAccount = async (req, res, next) => {
                     await new Promise(resolve => setTimeout(resolve, 3000));
                     dbConnection.insertExecution(sql).then((adminId) => {
                         //console.log(adminId)
-                        res.status(200).json({
+                        res.status(201).json({
                             message: "Admin successfully created",
                             user: userId,
                         });
-                        
+
                     })
                 } catch (error) {
                     userController.deleteUserAccount(username).then(() => {
@@ -45,10 +45,10 @@ exports.createAdminAccount = async (req, res, next) => {
                     })
                 }
             }
-    
+
         })
     }
-       
+
     console.log("Finished execution of createAdmin Function")
 }
 
@@ -57,66 +57,66 @@ exports.registerManager = async (req, res, next) => {
     const {
         username,
         password,
-        name,
+        fName,
+        lName,
         managerRole
     } = req.body
-
-    userController.createUserAccount(req, res, username, password, "manager").then(async (userId) => {
-        if (userId == -1) {
-            //console.log(userId)
-            return -1
-        } else {
-            //console.log("2222")
-            const sql = managerQuary.insertManager(userId, name, managerRole)
-            try {
-                await new Promise(resolve => setTimeout(resolve, 5000));
-                dbConnection.insertExecution(sql).then((adminId) => {
-                    res.json({
-                        message: "Manager successfully created",
-                        user: userId,
-                    });
-                    return 0
-                }).catch((error) => {
-                    throw error
-                })
-            } catch (error) {
-                userController.findUserAccount(username).then(() => {
+    if (!username||!password||!fName||!lName||!managerRole) {
+        return res.status(400).json({
+            message: "username,password,first name,last name or manager role not present"
+        })
+    } else {
+        userController.createUserAccount(req, res, username, password, "manager").then(async (userId) => {
+            console.log("userID: " + userId)
+            if (userId == -1) {
+                return -1
+            } else {
+                console.log("2222")
+                const sql = managerQuary.insertManager(userId, fName, lName, managerRole)
+                try {
+                    await new Promise(resolve => setTimeout(resolve, 3000));
+                    dbConnection.insertExecution(sql).then((adminId) => {
+                        //console.log(adminId)
+                        res.status(201).json({
+                            message: "Manager successfully created",
+                            user: userId,
+                        });
+                    })
+                } catch (error) {
                     userController.deleteUserAccount(username).then(() => {
                         res.json({
-                            message: "manager not successful created",
+                            message: "manager not successfully created",
                             error: error.mesage,
                         })
-                    }).catch((error) => {
-                        res.json({
-                            message: "you cant use this username anymore",
-                            error: error.mesage,
-                        })
-                        return -1
                     })
-                })
+                }
             }
-        }
-
-    })
-    //console.log("Finished execution of create manager Function")
+        })
+    }
+    console.log("Finished execution of create manager Function")
 }
 
 exports.updateManager = async (req, res, next) => {
     const {
-        name,
+        fName,
+        lName,
         role,
         username
     } = req.body
     // Verifying if role and id is presnt
-    if (!name || !role || !username) {
+    // console.log(fName,
+    //     lName,
+    //     role,
+    //     username)
+    if (!fName || !lName || !role || !username) {
         return res.status(400).json({
             message: "name or role or username not present"
         })
     } else {
-        const managerFindSql = managerQuary.findManager(username)
+        const managerFindSql = managerQuary.findManagerByUserName(username)
         dbConnection.findExecution(managerFindSql).then((result) => {
             if (result.length != 0) {
-                const sql = managerQuary.updateManagerSQL(name, role, username)
+                const sql = managerQuary.updateManagerSQL(fName, lName, role, username)
                 try {
                     dbConnection.updateDeleteExecution(sql).then((result) => {
                         //console.log(result)
@@ -160,9 +160,9 @@ exports.deleteManager = async (req, res, next) => {
         res.status(400).json({
             message: "username not present"
         })
-        retuen -1
-    }else{
-        const managerFindSql = managerQuary.findManager(username)
+        retuen - 1
+    } else {
+        const managerFindSql = managerQuary.findManagerByUserName(username)
         dbConnection.findExecution(managerFindSql).then((result) => {
             //console.log(result)
             if (result.length == 0) {
@@ -170,7 +170,7 @@ exports.deleteManager = async (req, res, next) => {
                     message: "Username not exists"
                 })
                 return -1
-            }else{
+            } else {
                 const sql = managerQuary.deleteManager(username)
                 //console.log(sql)
                 try {
@@ -197,6 +197,6 @@ exports.deleteManager = async (req, res, next) => {
                     return -1
                 }
             }
-        }) 
+        })
     }
 }
