@@ -9,7 +9,7 @@ const {connectDB} = require("./db");
 //Connecting the Database
 connectDB();
 
-const { adminAuth, userAuth } = require("./auth/auth");
+const { adminAuth, userAuth } = require("./middleware/auth/auth");
 
 // app.get("/admin", adminAuth, (req, res) => res.send("Admin Route"));
 // app.get("/basic", userAuth, (req, res) => res.send("User Route"));

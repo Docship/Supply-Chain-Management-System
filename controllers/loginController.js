@@ -42,7 +42,7 @@ exports.login = async (req, res, next) => {
                         roleSql = adminQuary.findAdmin(userId)
                         break;
                     case "assistant":
-                        roleSql = assistantQuary.findAssistant(userId)
+                        roleSql = assistantQuary.findAssistantByUserId(userId)
                         break;
                     case "storekeeper":
                         roleSql = storekeeperQuary.findStorekeeperByUserId(userId)
