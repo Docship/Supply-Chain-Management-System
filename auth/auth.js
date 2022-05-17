@@ -21,14 +21,35 @@ exports.adminAuth = (req, res, next) => {
   }
 }
 
-exports.userAuth = (req, res, next) => {
+exports.managerAuth = (req, res, next) => {
     const token = req.cookies.jwt
     if (token) {
       jwt.verify(token, jwtSecret, (err, decodedToken) => {
         if (err) {
           return res.status(401).json({ message: "Not authorized" })
         } else {
-          if (decodedToken.role !== "Basic") {
+          if (decodedToken.role !== "manager") {
+            return res.status(401).json({ message: "Not authorized" })
+          } else {
+            next()
+          }
+        }
+      })
+    } else {
+      return res
+        .status(401)
+        .json({ message: "Not authorized, token not available" })
+    }
+  }
+
+  exports.storekeeperAuth = (req, res, next) => {
+    const token = req.cookies.jwt
+    if (token) {
+      jwt.verify(token, jwtSecret, (err, decodedToken) => {
+        if (err) {
+          return res.status(401).json({ message: "Not authorized" })
+        } else {
+          if (decodedToken.role !== "storekeeperAuth") {
             return res.status(401).json({ message: "Not authorized" })
           } else {
             next()

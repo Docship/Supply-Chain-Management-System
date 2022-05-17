@@ -1,241 +1,196 @@
-const Manager = require("../models/Users/manager.model.js")
-const Admin = require("../models/Users/admin.model.js")
-const bcrypt = require("bcryptjs")
-const jwt = require("jsonwebtoken")
-const jwtSecrete = '231e07bf113b22fabaca321b96e015aea7e853d91de217d264891f54a3fbce2f2831ea'
+const adminQuary = require("../quaries/admin.quary.js")
+const managerQuary = require("../quaries/manager.quary.js")
+const userController = require("./userController.js")
+const dbConnection = require("../db.js")
+// import { setTimeout } from 'timers/promises';
 
 exports.createAdminAccount = async (req, res, next) => {
-
-    const username = 'admin'
-    const password = '123456'
-    console.log('12')
-
-    if (password.length < 6) {
-        return res.status(400).json({
-            message: "Password less than 6 characters"
-        })
-    }
-    try {
-        bcrypt.hash(password, 10).then(async (hash) => {
-
-            const userId =await Admin.insertAdmin(username, hash)
-
-            if (userId != -1) {
-                const maxAge = 3 * 60 * 60;
-                const token = jwt.sign({
-                        id: userId,
-                        username,
-                        role: "admin"
-                    },
-                    jwtSecrete, {
-                        expiresIn: maxAge,
-                    }
-                );
-                res.cookie("jwt", token, {
-                    httpOnly: true,
-                    maxAge: maxAge * 1000,
-                });
-                res.status(201).json({
-                    message: "User successfully created",
-                    user: userId,
-                });
-            } else {
-                res.status(400).json({
-                    message: "User not successful created",
-                    error: "error",
+    const username = "admin5@g.com"
+    const password = "123456"
+    const name = "bimsara"
+    const role = "admin"
+    userController.createUserAccount(req, res, username, password, role).then(async (userId) => {
+        if (userId = -1) {
+            //console.log("1111")
+            return -1
+        } else {
+            //console.log("2222")
+            const sql = adminQuary.insertAdmin(userId, name)
+            try {
+                await new Promise(resolve => setTimeout(resolve, 5000));
+                dbConnection.insertExecution(sql).then((adminId) => {
+                    //console.log(adminId)
+                    res.json({
+                        message: "Admin successfully created",
+                        user: userId,
+                    });
+                    return 0
+                }).catch((error) => {
+                    res.json({
+                        message: "admin not successfully created",
+                        error: error.mesage,
+                    })
+                    return -1
+                })
+            } catch (error) {
+                await userController.deleteUserAccount(username).then(() => {
+                    res.json({
+                        message: "admin not successfully created",
+                        error: error.mesage,
+                    })
                 })
             }
-        })
-    } catch (error) {
-        res.status(401).json({
-            message: "User not successful created",
-            error: error.mesage,
-        })
-    }
+        }
+
+    })
+    console.log("Finished execution of createAdmin Function")
 }
 
-// exports.loginAdmin = async (req, res, next) => {
-//     const {
-//         username,
-//         password
-//     } = req.body
-//     // Check if username and password is provided
-//     if (!username || !password) {
-//         return res.status(400).json({
-//             message: "Username or Password not present",
-//         })
-//     }
-//     try {
-//         const user = await Admin.findOne({
-//             username
-//         })
-//         if (!user) {
-//             res.status(401).json({
-//                 message: "Login not successful",
-//                 error: "User not found",
-//             })
-//         } else {
-//             bcrypt.compare(password, user.password).then((result) => {
-//                 if (result) {
-//                     const maxAge = 3 * 60 * 60;
-//                     const token = jwt.sign({
-//                             id: user._id,
-//                             username,
-//                             role: user.role
-//                         },
-//                         jwtSecrete, {
-//                             expiresIn: maxAge, // 3hrs in sec
-//                         }
-//                     );
-//                     res.cookie("jwt", token, {
-//                         httpOnly: true,
-//                         maxAge: maxAge * 1000, // 3hrs in ms
-//                     });
-//                     res.status(201).json({
-//                         message: "User successfully Logged in",
-//                         user: user._id,
-//                     });
-//                 } else {
-//                     res.status(400).json({
-//                         message: "Login not succesful"
-//                     });
-//                 }
-//             })
-//         }
-//     } catch (error) {
-//         res.status(400).json({
-//             message: "An error occurred",
-//             error: error.message,
-//         });
-//     }
-// }
 
 exports.registerManager = async (req, res, next) => {
     const {
         username,
-        password
+        password,
+        name,
+        managerRole
     } = req.body
-    if (password.length < 6) {
-        return res.status(400).json({
-            message: "Password less than 6 characters"
-        })
-    }
-    try {
-        bcrypt.hash(password, 10).then(async (hash) => {
-            await Manager.create({
-                    username,
-                    password: hash,
-                }).then((user) => {
-                    const maxAge = 3 * 60 * 60;
-                    const token = jwt.sign({
-                            id: user._id,
-                            username,
-                            role: user.role
-                        },
-                        jwtSecrete, {
-                            expiresIn: maxAge,
-                        }
-                    );
-                    res.cookie("jwt", token, {
-                        httpOnly: true,
-                        maxAge: maxAge * 1000,
+
+    userController.createUserAccount(req, res, username, password, "manager").then(async (userId) => {
+        if (userId == -1) {
+            //console.log(userId)
+            return -1
+        } else {
+            //console.log("2222")
+            const sql = managerQuary.insertManager(userId, name, managerRole)
+            try {
+                await new Promise(resolve => setTimeout(resolve, 5000));
+                dbConnection.insertExecution(sql).then((adminId) => {
+                    res.json({
+                        message: "Manager successfully created",
+                        user: userId,
                     });
-                    res.status(201).json({
-                        message: "User successfully created",
-                        user: user._id,
-                    });
+                    return 0
+                }).catch((error) => {
+                    throw error
                 })
-                .catch((error) => {
-                    res.status(400).json({
-                        message: "User not successful created",
-                        error: error.message,
+            } catch (error) {
+                userController.findUserAccount(username).then(() => {
+                    userController.deleteUserAccount(username).then(() => {
+                        res.json({
+                            message: "manager not successful created",
+                            error: error.mesage,
+                        })
+                    }).catch((error) => {
+                        res.json({
+                            message: "you cant use this username anymore",
+                            error: error.mesage,
+                        })
+                        return -1
                     })
                 })
-        })
-    } catch (err) {
-        res.status(401).json({
-            message: "User not successful created",
-            error: error.mesage,
-        })
-    }
+            }
+        }
+
+    })
+    //console.log("Finished execution of create manager Function")
 }
-
-
 
 exports.updateManager = async (req, res, next) => {
     const {
+        name,
         role,
-        id
+        username
     } = req.body
     // Verifying if role and id is presnt
-    if (role && id) {
-        // Verifying if the value of role is admin
-        if (role === "admin") {
-            await Manager.findById(id)
-                .then((user) => {
-                    // Third - Verifies the user is not an admin
-                    if (user.role !== "admin") {
-                        user.role = role;
-                        user.save((err) => {
-                            //Monogodb error checker
-                            if (err) {
-                                res
-                                    .status("400")
-                                    .json({
-                                        message: "An error occurred",
-                                        error: err.message
-                                    });
-                                process.exit(1);
-                            }
-                            res.status("201").json({
-                                message: "Update successful",
-                                user
-                            });
+    if (!name || !role || !username) {
+        return res.status(400).json({
+            message: "name or role or username not present"
+        })
+    } else {
+        const managerFindSql = managerQuary.findManager(username)
+        dbConnection.findExecution(managerFindSql).then((result) => {
+            if (result.length != 0) {
+                const sql = managerQuary.updateManagerSQL(name, role, username)
+                try {
+                    dbConnection.updateDeleteExecution(sql).then((result) => {
+                        //console.log(result)
+                        res.status(201).json({
+                            message: "Update successful"
                         });
-                    } else {
+                        return 0
+                    }).catch((error) => {
+                        console.log("4");
                         res.status(400).json({
-                            message: "User is already an Admin"
-                        });
-                    }
-                })
-                .catch((error) => {
-                    res
-                        .status(400)
-                        .json({
                             message: "An error occurred",
                             error: error.message
                         });
-                });
-        } else {
-            res.status(400).json({
-                message: "Role is not admin",
-            })
-        }
-    } else {
-        res.status(400).json({
-            message: "Role or Id not present"
+                        return -1
+                    })
+                } catch (error) {
+                    //console.log(error)
+                    console.log("3");
+                    res.status(400).json({
+                        message: "An error occurred",
+                        error: error.message
+                    })
+                    return -1
+                }
+            } else {
+                res.status(400).json({
+                    message: "Username not exists"
+                })
+                return -1
+            }
         })
+
     }
 }
 
 exports.deleteManager = async (req, res, next) => {
     const {
-        id
+        username
     } = req.body
-    await Manager.findById(id)
-        .then(user => user.remove())
-        .then(user =>
-            res.status(201).json({
-                message: "User successfully deleted",
-                user
-            })
-        )
-        .catch(error =>
-            res
-            .status(400)
-            .json({
-                message: "An error occurred",
-                error: error.message
-            })
-        )
+    if (!username) {
+        res.status(400).json({
+            message: "username not present"
+        })
+        retuen -1
+    }else{
+        const managerFindSql = managerQuary.findManager(username)
+        dbConnection.findExecution(managerFindSql).then((result) => {
+            //console.log(result)
+            if (result.length == 0) {
+                res.status(400).json({
+                    message: "Username not exists"
+                })
+                return -1
+            }else{
+                const sql = managerQuary.deleteManager(username)
+                //console.log(sql)
+                try {
+                    dbConnection.updateDeleteExecution(sql).then(async () => {
+                        userController.deleteUserAccount(username).then((result) => {
+                            res.status(201).json({
+                                message: "User successfully deleted"
+                            })
+                        })
+                    }).catch((error) => {
+                        console.log("2");
+                        res.status(400).json({
+                            message: "An error occurred",
+                            error: error.message
+                        });
+                        return -1
+                    })
+                } catch (error) {
+                    console.log("1");
+                    res.status(400).json({
+                        message: "An error occurred",
+                        error: error.message
+                    })
+                    return -1
+                }
+            }
+        }) 
+    }
 }
