@@ -1,45 +1,45 @@
-const storekeeperQuary = require("../quaries/storekeeper.quary.js")
+const assistantQuary = require("../quaries/assistant.quary.js")
 const userController = require("./userController.js")
 const dbConnection = require("../db.js")
 
-exports.registerStorekeeper = async (req, res, next) => {
+exports.registerAssistant = async (req, res, next) => {
     const {
         username,
         password,
         fName,
         lName
     } = req.body
-        userController.createUserAccount(req, res, username, password, "storekeeper").then(async (userId) => {
+        userController.createUserAccount(req, res, username, password, "assistant").then(async (userId) => {
                 console.log("userID: "+userId)
                 if (userId == -1) {
                     return -1
                 } else {
                     console.log("2222")
-                    const sql = storekeeperQuary.insertStorekeeper(userId,fName,lName)
+                    const sql = assistantQuary.insertAssistant(userId,fName,lName)
                     try {
                         await new Promise(resolve => setTimeout(resolve, 3000));
                         dbConnection.insertExecution(sql).then((adminId) => {
                             //console.log(adminId)
                             res.status(201).json({
-                                message: "Storekeeper successfully created",
+                                message: "assistant successfully created",
                                 user: userId,
                             });
                         })
                     } catch (error) {
                         userController.deleteUserAccount(username).then(() => {
                             res.json({
-                                message: "storekeeper not successfully created",
+                                message: "assistant not successfully created",
                                 error: error.mesage,
                             })
                         })
                     }
                 }
             })
-    console.log("Finished execution of create storekeeper Function")
+    console.log("Finished execution of create assistant Function")
 }
 
 
-exports.updateStorekeeper = async (req, res, next) => {
+exports.updateAssistant = async (req, res, next) => {
     const {
         fName,
         lName,
@@ -51,10 +51,10 @@ exports.updateStorekeeper = async (req, res, next) => {
             message: "first name,last name or username not present"
         })
     } else {
-        const storekeeperFindSql = storekeeperQuary.findStorekeeperByUsername(username)
-        dbConnection.findExecution(storekeeperFindSql).then((result) => {
+        const assistantFindSql = assistantQuary.findAssistantByUsername(username)
+        dbConnection.findExecution(assistantFindSql).then((result) => {
             if (result.length != 0) {
-                const sql = storekeeperQuary.updateStorekeeper(fName,lName,username)
+                const sql = assistantQuary.updateAssistant(fName,lName,username)
                 try {
                     dbConnection.updateDeleteExecution(sql).then((result) => {
                         //console.log(result)
@@ -90,7 +90,7 @@ exports.updateStorekeeper = async (req, res, next) => {
 }
 
 
-exports.deleteStorekeeper = async (req, res, next) => {
+exports.deleteAssistant = async (req, res, next) => {
     const {
         username
     } = req.body
@@ -100,8 +100,8 @@ exports.deleteStorekeeper = async (req, res, next) => {
         })
         retuen - 1
     } else {
-        const storekeeperFindSql = storekeeperQuary.findStorekeeperByUsername(username)
-        dbConnection.findExecution(storekeeperFindSql).then((result) => {
+        const assistantFindSql = assistantQuary.findAssistantByUsername(username)
+        dbConnection.findExecution(assistantFindSql).then((result) => {
             console.log(result)
             if (result.length == 0) {
                 res.status(400).json({
@@ -109,7 +109,7 @@ exports.deleteStorekeeper = async (req, res, next) => {
                 })
                 return -1
             } else {
-                const sql = storekeeperQuary.deleteStorekeeper(username)
+                const sql = assistantQuary.deleteAssistant(username)
                 //console.log(sql)
                 try {
                     dbConnection.updateDeleteExecution(sql).then(async () => {
