@@ -17,15 +17,18 @@ const connectDB = async () => {
 
 const query = util.promisify(con.query).bind(con);
 //table create
-exports.tableCreate = async (sql) => {
+// exports.tableCreate = async (sql) => {
 
-}
+// }
 
-const insertExecution = (sql) => new Promise((resolve,reject)=>{
+const insertExecution = (sql) => new Promise((resolve, reject) => {
   try {
     query(sql, (err, result) => {
       if (err) {
-        throw err;
+        resolve(-1)
+        // console.log(err)
+        // reject(err.sqlMessage)
+        //throw err;
       }
       resolve(result)
     });
@@ -50,11 +53,11 @@ const findExecution = (sql) => new Promise((resolve, reject) => {
   }
 });
 
-const updateDeleteExecution = (sql) => new Promise((resolve,reject)=>{
+const updateDeleteExecution = (sql) => new Promise((resolve, reject) => {
   try {
     query(sql, (err, result) => {
       if (err) {
-        throw err;
+        resolve(-1);
       }
       //console.log(result)
       resolve(result)
@@ -65,48 +68,87 @@ const updateDeleteExecution = (sql) => new Promise((resolve,reject)=>{
   }
 })
 
-// const updateExecution1 = async (username, password, sql) => {
-//   try {
-//     // let sql = quary;
-//     // execute the insert statment
-//     const [id] = con.query(sql, (err, result) => {
-//       if (err) console.log(err);
-//       resolve(result)
-//       //console.log(result.insertId);
-//     });
+const transactionExecutionInsert = (sql_1, sql_2,userId) => new Promise((resolve, reject) => {
+  try {
+    con.beginTransaction(function (err) {
+      if (err) {
+        throw err;
+      }
+      query(sql_1, function (error, results, fields) {
+        if (error) {
+          return con.rollback(function () {
+            throw error;
+          });
+        }
+        con.query(sql_2,userId, function (error, results, fields) {
+          if (error) {
+            return con.rollback(function () {
+              throw error;
+            });
+          }
+          con.commit(function (err) {
+            if (err) {
+              return con.rollback(function () {
+                throw err;
+              });
+            }
+            console.log('success!');
+            resolve(userId)
+          });
+        });
+      });
+    });
+  } catch (error) {
 
-//     con.end();
-//     console.log(id)
-//     return id
-//   } catch (err) {
-//     return -1
-//   }
-// }
+  }
+})
 
+const transactionExecutionUpdate = (sql_1, sql_2,userId) => new Promise((resolve, reject) => {
+  try {
+    con.beginTransaction(function (err) {
+      if (err) {
+        throw err;
+      }
+      query(sql_1, function (error, results, fields) {
+        if (error) {
+          return con.rollback(function () {
+            throw error;
+          });
+        }
 
-// const deleteExecution = async (sql) => {
-//   try {
-//     // let sql = quary;
-//     // execute the insert statment
-//     const [id] = con.query(sql, (err, result) => {
-//       if (err) console.log(err);
-//       //console.log(result.insertId);
-//       resolve(result)
-//     });
+        if (results.length != 0) {
+          con.query(sql_2, function (error, results, fields) {
+            if (error) {
+              return con.rollback(function () {
+                throw error;
+              });
+            }
+            con.commit(function (err) {
+              if (err) {
+                return con.rollback(function () {
+                  throw err;
+                });
+              }
+              console.log('success!');
+              resolve(true)
+            });
+          });
+        }else{
+          resolve(true)
+        }
+      });
+    });
+  } catch (error) {
 
-//     con.end();
-//     console.log(id)
-//     return id
-//   } catch (err) {
-//     return -1
-//   }
-// }
-
+  }
+})
 
 module.exports = {
   connectDB,
   con,
   insertExecution,
   updateDeleteExecution,
-  findExecution
+  findExecution,
+  transactionExecutionInsert,
+  transactionExecutionUpdate
 }

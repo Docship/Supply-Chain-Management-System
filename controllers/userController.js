@@ -34,26 +34,11 @@ exports.createUserAccount = async (req, res, username, password, role) => {
             return -1
         }
         try {
-            //console.log(password)
+            
             let hash = await bcrypt.hash(password, 10)
-            //console.log(hash)
-            const sql = userQuary.insertUser(userId, username, hash)
+            const sql = userQuary.insertUser(userId, username, hash, role)
             let result = await dbConnection.insertExecution(sql)
-            console.log(result)
-            const maxAge = 3 * 60 * 60;
-            const token = jwt.sign({
-                    id: userId,
-                    username,
-                    role: role
-                },
-                jwtSecrete, {
-                    expiresIn: maxAge,
-                }
-            );
-            res.cookie("jwt", token, {
-                httpOnly: true,
-                maxAge: maxAge * 1000,
-            });
+        
             return userId
         } catch (error) {
             res.status(401).json({

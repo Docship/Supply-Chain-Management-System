@@ -1,6 +1,6 @@
 //insert user
-exports.insertUser = (userId,username,password)=>{
-    return `INSERT INTO user(User_ID,Username,Password) VALUES("${userId}","${username}","${password}")`;
+exports.insertUser = (userId,username,password, role)=>{
+    return `INSERT INTO user(User_ID,Username,Password,Role) VALUES("${userId}","${username}","${password}","${role}")`;
 }
 
 exports.insertAdmin = (userId,username,password,name)=>{

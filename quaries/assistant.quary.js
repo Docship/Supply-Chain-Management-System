@@ -4,6 +4,9 @@ exports.findAssistantByUserId = (userId)=>{
 exports.findAssistantByUsername = (username)=>{
     return `SELECT * FROM assistant WHERE User_ID = (select User_ID from user where Username = "${username}")`
 }
+exports.findAssistantByAssistantId = (assistantId)=>{
+    return `SELECT * FROM assistant WHERE Assistant_ID="${assistantId}"`
+}
 
 //insert Assistant
 exports.insertAssistant = (userId,fName,lName)=>{
@@ -18,4 +21,8 @@ exports.deleteAssistant = (username)=>{
 //update Assistant
 exports.updateAssistant = (fName,lName,username)=>{
     return `UPDATE assistant SET First_Name = "${fName}",Last_Name = "${lName}" WHERE User_ID =(SELECT User_ID from user WHERE Username = "${username}")`
+}
+
+exports.getAssistants = ()=>{
+    return `SELECT * FROM assistant`
 }
