@@ -26,7 +26,7 @@ const insertExecution = (sql) => new Promise((resolve, reject) => {
     query(sql, (err, result) => {
       if (err) {
         resolve(-1)
-        // console.log(err)
+        console.log(err)
         // reject(err.sqlMessage)
         //throw err;
       }
@@ -68,7 +68,7 @@ const updateDeleteExecution = (sql) => new Promise((resolve, reject) => {
   }
 })
 
-const transactionExecutionInsert = (sql_1, sql_2,userId) => new Promise((resolve, reject) => {
+const transactionExecutionInsert = (sql_1, sql_2) => new Promise((resolve, reject) => {
   try {
     con.beginTransaction(function (err) {
       if (err) {
@@ -80,7 +80,7 @@ const transactionExecutionInsert = (sql_1, sql_2,userId) => new Promise((resolve
             throw error;
           });
         }
-        con.query(sql_2,userId, function (error, results, fields) {
+        con.query(sql_2,function (error, results, fields) {
           if (error) {
             return con.rollback(function () {
               throw error;
@@ -93,13 +93,12 @@ const transactionExecutionInsert = (sql_1, sql_2,userId) => new Promise((resolve
               });
             }
             console.log('success!');
-            resolve(userId)
+            resolve(1)
           });
         });
       });
     });
   } catch (error) {
-
   }
 })
 

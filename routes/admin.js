@@ -7,7 +7,7 @@ router.route("/register").post(adminAuth,registerManager)
 router.route("/update").put(adminAuth,updateManager)
 router.route("/delete").delete(adminAuth,deleteManager)
 
-// router.route('/makeAcc').get(createAdminAccount)
+router.route('/makeAcc').get(createAdminAccount)
 
 
 module.exports = router

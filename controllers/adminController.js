@@ -57,6 +57,12 @@ exports.registerManager = async (req, res, next) => {
         lName,
         managerRole
     } = req.body
+
+    const details = {username:username,password:password,fName:fName,lName:lName,managerRole:managerRole}
+    userController.createUserDummy(req,res,details,"MANAGER")
+    return
+
+
     if (!username || !password || !fName || !lName || !managerRole) {
         return res.status(400).json({
             message: "username,password,first name,last name or manager role not present"
