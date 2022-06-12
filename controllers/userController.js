@@ -13,15 +13,16 @@ const uniqid = require("uniqid");
 const res = require("express/lib/response");
 var validator = require("validator");
 
-exports.createUserDummy = async (res, details, role) => {
-      
+exports.createUserDummy = async (req, res, details, role) => {
+
     const userSql = userQuary.findUser(details.username);
-    
+
     let results = await dbConnection.findExecution(userSql);
     if (results.length != 0) {
-        return res.status(400).json({
+        res.status(400).json({
             message: "Username already exists",
         });
+        return
     }
 
     try {
@@ -34,18 +35,31 @@ exports.createUserDummy = async (res, details, role) => {
                 roleSql = managerQuary.insertManager(userId, details.fName, details.lName, details.managerRole)
                 break;
             case "STOREKEEPER":
+                roleSql = storekeeperQuary.insertStorekeeper(userId, details.fName, details.lName)
                 break;
             case "ASSISTANT":
+                roleSql = assistantQuary.insertAssistant(userId, details.fName, details.lName)
                 break;
             default:
                 return res.status(400).json({
-                    message: "Something went wrong",
+                    message: "Wrong role type",
                 });
-        }console.log(details)
-        console.log(userSql,roleSql)
-        const res = await dbConnection.transactionExecutionInsert(userSql,roleSql)
-        res.status(200).json({
-            message:"Success"})
+        }
+        console.log(details)
+        console.log(userSql, roleSql)
+        try {
+            const result = await dbConnection.transactionExecutionInsert(userSql, roleSql)
+            res.status(200).json({
+                message: "Success"
+            })
+        } catch (error) {
+            console.log("i got here")
+            res.status(401).json({
+                message: "failed",
+                erorr: error
+            })
+        }
+
     } catch (error) {
         console.log(error)
         return res.status(401).json({

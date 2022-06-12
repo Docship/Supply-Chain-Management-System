@@ -83,7 +83,8 @@ const transactionExecutionInsert = (sql_1, sql_2) => new Promise((resolve, rejec
         con.query(sql_2,function (error, results, fields) {
           if (error) {
             return con.rollback(function () {
-              throw error;
+              console.log("error passed here2222222")
+              throw error.sqlMessage;
             });
           }
           con.commit(function (err) {
@@ -99,6 +100,8 @@ const transactionExecutionInsert = (sql_1, sql_2) => new Promise((resolve, rejec
       });
     });
   } catch (error) {
+    console.log("error passed here")
+    throw error
   }
 })
 

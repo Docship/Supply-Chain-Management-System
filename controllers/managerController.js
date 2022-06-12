@@ -9,6 +9,7 @@ const dbConnection = require("../db.js")
 const req = require("express/lib/request")
 const storekeeper = "STOREKEEPER"
 
+
 exports.registerStorekeeper = async (req, res, next) => {
     const {
         username,
@@ -20,36 +21,12 @@ exports.registerStorekeeper = async (req, res, next) => {
         res.status(400).json({
             message: "first name, last name, password or username not present"
         })
-    }else{
-        userController.createUserAccount(req, res, username, password, storekeeper).then(async (userId) => {
-            console.log("userID: "+userId)
-            if (userId == -1) {
-                return -1
-            } else {
-                console.log("2222")
-                const sql = storekeeperQuary.insertStorekeeper(userId,fName,lName)
-                try {
-                    //await new Promise(resolve => setTimeout(resolve, 3000));
-                    dbConnection.insertExecution(sql).then((adminId) => {
-                        //console.log(adminId)
-                        res.status(201).json({
-                            message: "Storekeeper successfully created",
-                            user: userId,
-                        });
-                    })
-                } catch (error) {
-                    userController.deleteUserAccount(username).then(() => {
-                        res.json({
-                            message: "storekeeper not successfully created",
-                            error: error.mesage,
-                        })
-                    })
-                }
-            }
-        })
-    }  
-    //console.log("Finished execution of create storekeeper Function")
+    }
+    const details = {username:username,password:password,fName:fName,lName:lName}
+    userController.createUserDummy(req,res,details,"STOREKEEPER").then(console.log("Finished execution of create storekeeper Function")
+    )
 }
+
 
 
 exports.updateStorekeeper = async (req, res, next) => {

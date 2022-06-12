@@ -58,52 +58,15 @@ exports.registerManager = async (req, res, next) => {
         managerRole
     } = req.body
 
-    const details = {username:username,password:password,fName:fName,lName:lName,managerRole:managerRole}
-    userController.createUserDummy(req,res,details,"MANAGER")
-    return
-
-
     if (!username || !password || !fName || !lName || !managerRole) {
-        return res.status(400).json({
+        res.status(400).json({
             message: "username,password,first name,last name or manager role not present"
         })
-    } else {
-        userController.createUserAccount(req, res, username, password, manager).then(async (userId) => {
-            //console.log("userID: " + userId)
-            if (userId == -1) {
-                return -1
-            } else {
-                console.log("2222")
-                const sql = managerQuary.insertManager(userId, fName, lName, managerRole)
-                try {
-                    //await new Promise(resolve => setTimeout(resolve, 3000));
-                    dbConnection.insertExecution(sql).then((result) => {
-                        if (result == -1) {
-                            res.status(400).json({
-                                message: "error",
-                                isAdded: false
-                            })
-                        } else {
-                            //console.log(adminId)
-                            res.status(201).json({
-                                message: "Manager successfully created",
-                                user: userId,
-                            });
-                        }
-
-                    })
-                } catch (error) {
-                    userController.deleteUserAccount(username).then(() => {
-                        res.json({
-                            message: "manager not successfully created",
-                            error: error.mesage,
-                        })
-                    })
-                }
-            }
-        })
+        return
     }
-    console.log("Finished execution of create manager Function")
+    const details = {username:username,password:password,fName:fName,lName:lName,managerRole:managerRole}
+    userController.createUserDummy(req,res,details,"MANAGER").then(console.log("Finished execution of create manager Function")
+    )
 }
 
 exports.updateManager = async (req, res, next) => {

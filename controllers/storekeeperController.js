@@ -11,6 +11,8 @@ const dbConnection = require("../db.js")
 const res = require("express/lib/response")
 const assistant = "ASSISTANT"
 
+
+
 exports.registerAssistant = async (req, res, next) => {
     const {
         username,
@@ -22,37 +24,13 @@ exports.registerAssistant = async (req, res, next) => {
         res.status(400).json({
             message: "first name, last name, password or username not present"
         })
-    } else {
-        userController.createUserAccount(req, res, username, password, assistant).then(async (userId) => {
-            console.log("userID: " + userId)
-            if (userId == -1) {
-                return -1
-            } else {
-                console.log("2222")
-                const sql = assistantQuary.insertAssistant(userId, fName, lName)
-                try {
-                    //await new Promise(resolve => setTimeout(resolve, 3000));
-                    dbConnection.insertExecution(sql).then((adminId) => {
-                        //console.log(adminId)
-                        res.status(201).json({
-                            message: "assistant successfully created",
-                            user: userId,
-                        });
-                    })
-                } catch (error) {
-                    userController.deleteUserAccount(username).then(() => {
-                        res.json({
-                            message: "assistant not successfully created",
-                            error: error.mesage,
-                        })
-                    })
-                }
-            }
-        })
+        return
     }
-
-    //console.log("Finished execution of create assistant Function")
+    const details = {username:username,password:password,fName:fName,lName:lName}
+    userController.createUserDummy(req,res,details,"ASSISTANT").then(console.log("Finished execution of create manager Function")
+    )
 }
+
 
 exports.updateAssistant = async (req, res, next) => {
     const {
