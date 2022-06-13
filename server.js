@@ -19,7 +19,7 @@ app.use('/storekeeper',require('./routes/storekeeper.js'))
 
 // app.use("/assistant",require("./routes/assistant.js"))
 
-const PORT = 5000
+const PORT = process.env.PORT || 5000
 
 const server = app.listen(PORT, () =>
   console.log(`Server Connected to port ${PORT}`)
