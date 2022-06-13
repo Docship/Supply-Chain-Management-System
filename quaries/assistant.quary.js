@@ -5,7 +5,7 @@ exports.findAssistantByUsername = (username)=>{
     return `SELECT * FROM assistant WHERE User_ID = (select User_ID from user where Username = "${username}")`
 }
 exports.findAssistantByAssistantId = (assistantId)=>{
-    return `SELECT * FROM assistant WHERE Assistant_ID="${assistantId}"`
+    return `SELECT * FROM assistant WHERE ID="${assistantId}"`
 }
 
 //insert Assistant

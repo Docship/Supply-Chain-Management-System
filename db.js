@@ -15,15 +15,30 @@ const connectDB = async () => {
   });
 }
 
-const query = util.promisify(con.query).bind(con);
-//table create
-// exports.tableCreate = async (sql) => {
 
-// }
 
-const insertExecution = (sql) => new Promise((resolve, reject) => {
+
+const insertExecutionDummy = (sql,vars) => new Promise((resolve, reject) => {
   try {
-    query(sql, (err, result) => {
+    con.query(sql, vars, (err, result) => {
+      if (err) {
+        resolve(-1)
+        console.log(err)
+        // reject(err.sqlMessage)
+        //throw err;
+      }
+      resolve(result)
+    });
+  } catch (error) {
+    console.log(error)
+    reject(-1)
+  }
+})
+
+
+const insertExecution = (sql,) => new Promise((resolve, reject) => {
+  try {
+    con.query(sql, (err, result) => {
       if (err) {
         resolve(-1)
         console.log(err)
@@ -40,7 +55,7 @@ const insertExecution = (sql) => new Promise((resolve, reject) => {
 
 const findExecution = (sql) => new Promise((resolve, reject) => {
   try {
-    query(sql, (err, result) => {
+    con.query(sql, (err, result) => {
       if (err) {
         throw err;
       }
@@ -55,7 +70,7 @@ const findExecution = (sql) => new Promise((resolve, reject) => {
 
 const updateDeleteExecution = (sql) => new Promise((resolve, reject) => {
   try {
-    query(sql, (err, result) => {
+    con.query(sql, (err, result) => {
       if (err) {
         resolve(-1);
       }
@@ -152,5 +167,6 @@ module.exports = {
   updateDeleteExecution,
   findExecution,
   transactionExecutionInsert,
-  transactionExecutionUpdate
+  transactionExecutionUpdate,
+  insertExecutionDummy
 }

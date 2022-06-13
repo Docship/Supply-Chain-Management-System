@@ -2,8 +2,10 @@ const storekeeperQuary = require("../quaries/storekeeper.quary.js")
 const trainQuary = require("../quaries/train.quary.js")
 const trainDeliveryAssignQuary = require("../quaries/trainDeliveryAssign.quary.js")
 const trainOrderDeliveryQuary = require("../quaries/trainOrderDelivery.quary.js")
-
+const customerQuary = require("../quaries/customer.quary.js")
 const orderQuary = require("../quaries/order.quary.js")
+const routeQuary = require("../quaries/route.quary.js")
+
 const userController = require("./userController.js")
 const dbConnection = require("../db.js")
 const req = require("express/lib/request")
@@ -22,9 +24,13 @@ exports.registerStorekeeper = async (req, res, next) => {
             message: "first name, last name, password or username not present"
         })
     }
-    const details = {username:username,password:password,fName:fName,lName:lName}
-    userController.createUserDummy(req,res,details,"STOREKEEPER").then(console.log("Finished execution of create storekeeper Function")
-    )
+    const details = {
+        username: username,
+        password: password,
+        fName: fName,
+        lName: lName
+    }
+    userController.createUserDummy(req, res, details, "STOREKEEPER").then(console.log("Finished execution of create storekeeper Function"))
 }
 
 
@@ -36,7 +42,7 @@ exports.updateStorekeeper = async (req, res, next) => {
         username
     } = req.body
     // Verifying if role and id is presnt
-    if (!fName|| !lName|| !username) {
+    if (!fName || !lName || !username) {
         return res.status(400).json({
             message: "first name,last name or username not present"
         })
@@ -44,7 +50,7 @@ exports.updateStorekeeper = async (req, res, next) => {
         const storekeeperFindSql = storekeeperQuary.findStorekeeperByUsername(username)
         dbConnection.findExecution(storekeeperFindSql).then((result) => {
             if (result.length != 0) {
-                const sql = storekeeperQuary.updateStorekeeper(fName,lName,username)
+                const sql = storekeeperQuary.updateStorekeeper(fName, lName, username)
                 try {
                     dbConnection.updateDeleteExecution(sql).then((result) => {
                         //console.log(result)
@@ -133,10 +139,11 @@ exports.deleteStorekeeper = async (req, res, next) => {
 exports.addTrain = async (req, res, next) => {
     const {
         startCity,
-        endCity,capacity
+        endCity,
+        capacity
     } = req.body
-    const sql = trainQuary.insertTrain(startCity, endCity,capacity)
-    if (!startCity || !endCity||!capacity) {
+    const sql = trainQuary.insertTrain(startCity, endCity, capacity)
+    if (!startCity || !endCity || !capacity) {
         res.status(400).json({
             message: "start city, end city or capacity not present",
             isAdded: false
@@ -166,7 +173,7 @@ exports.updateTrain = async (req, res, next) => {
         endCity,
         capacity
     } = req.body
-    if (!startCity || !endCity || !trainId||!capacity) {
+    if (!startCity || !endCity || !trainId || !capacity) {
         res.status(400).json({
             message: "train id, start city or end city not present"
         })
@@ -234,13 +241,13 @@ exports.deleteTrain = async (req, res, next) => {
     }
 }
 
-exports.postDeliveryComponents=async (req,res,next)=>{
+exports.postDeliveryComponents = async (req, res, next) => {
     try {
         const trainSql = trainQuary.getTrains()
         var trains = await dbConnection.findExecution(trainSql)
 
         res.status(201).json({
-            message:"success",
+            message: "success",
             isDelivered: true,
             trains: trains,
         })
@@ -253,7 +260,7 @@ exports.postDeliveryComponents=async (req,res,next)=>{
     }
 }
 
-exports.deliveryComponents = async  (req,res,next)=>{
+exports.deliveryComponents = async (req, res, next) => {
     const {
         trainId,
         dateOfDepature,
@@ -262,7 +269,7 @@ exports.deliveryComponents = async  (req,res,next)=>{
     } = req.body
 
     if (!trainId || !dateOfDepature || !timeOfDepature || !transportHours) {
-        res.send(401).json({
+        res.status(401).json({
             message: "component missing",
             isAdded: false
         })
@@ -272,13 +279,13 @@ exports.deliveryComponents = async  (req,res,next)=>{
             let train = await dbConnection.findExecution(trainSql)
 
             if (train.length == 0) {
-                res.send(401).json({
+                res.status(401).json({
                     message: "wrong train id ",
                     isAdded: false
                 })
             } else {
                 try {
-                    const sql = trainDeliveryAssignQuary.addDeliveryComponents(trainId,dateOfDepature,timeOfDepature,transportHours)
+                    const sql = trainDeliveryAssignQuary.addDeliveryComponents(trainId, dateOfDepature, timeOfDepature, transportHours)
                     dbConnection.insertExecution(sql).then((result) => {
                         res.status(201).json({
                             message: "Delivery components added",
@@ -293,7 +300,7 @@ exports.deliveryComponents = async  (req,res,next)=>{
                 }
             }
         } catch {
-            res.send(401).json({
+            res.status(401).json({
                 message: "error when finding components",
                 isAdded: false
             })
@@ -302,7 +309,7 @@ exports.deliveryComponents = async  (req,res,next)=>{
 }
 
 
-exports.postAddTrainOrderDelivery = async (req,res,next)=>{
+exports.postAddTrainOrderDelivery = async (req, res, next) => {
     try {
         const orderSql = orderQuary.getOrders()
         var orders = await dbConnection.findExecution(orderSql)
@@ -311,7 +318,7 @@ exports.postAddTrainOrderDelivery = async (req,res,next)=>{
         var deliveries = await dbConnection.findExecution(deliverySql)
 
         res.status(201).json({
-            message:"success",
+            message: "success",
             isDelivered: true,
             orders: orders,
             deliveries: deliveries
@@ -338,8 +345,8 @@ exports.addTrainOrderDelivery = async (req, res, next) => {
 
         const assignSql = trainDeliveryAssignQuary.findDeliveryComponents(assignmentId)
         let assigns = await dbConnection.findExecution(assignSql)
-       
-        if ((order==-1 || order.length == 0) || (assigns==-1 || assigns.length == 0)) {
+
+        if ((order == -1 || order.length == 0) || (assigns == -1 || assigns.length == 0)) {
             res.status(400).json({
                 message: "error",
                 isAdded: false
@@ -353,14 +360,105 @@ exports.addTrainOrderDelivery = async (req, res, next) => {
                             message: "error",
                             isAdded: false
                         })
-                    }else{
+                    } else {
                         res.status(201).json({
                             message: "success",
                             isAdded: true
                         })
                     }
-                    
-                }).catch((err)=>{throw new Error(err)})
+
+                }).catch((err) => {
+                    throw new Error(err)
+                })
+            } catch (error) {
+                res.status(400).json({
+                    message: error.message,
+                    isAdded: false
+                })
+            }
+        }
+    } catch (error) {
+        res.status(401).json({
+            message: "error when finding Ids",
+            isAdded: false
+        })
+    }
+}
+
+exports.postAddOrder = async (req, res, next) => {
+    try {
+        const customerSql = customerQuary.getCustomers()
+        var customers = await dbConnection.findExecution(customerSql)
+
+        const routeSql = routeQuary.getRoutes()
+        var routes = await dbConnection.findExecution(routeSql)
+
+        res.status(201).json({
+            message: "success",
+            customers: customers,
+            routes: routes
+        })
+    } catch (error) {
+        res.status(400).json({
+            message: "An error occurred",
+            error: error.message,
+            isDelivered: false
+        })
+    }
+}
+
+exports.addOrder = async (req, res, next) => {
+    const {
+        customerId,
+        price,
+        date,
+        routeId,
+        isDelivered,
+        capacity
+    } = req.body
+    console.log(!isDelivered)
+    
+    if (!customerId || !price || !date || !routeId || !isDelivered || !capacity) {
+        res.status(401).json({
+            message: "component missing",
+            isAdded: false
+        })
+        return
+    }
+    try {
+        const customerSql = customerQuary.findCustomer(customerId)
+        let customer = await dbConnection.findExecution(customerSql)
+
+        const routeSql = routeQuary.findRoute(routeId)
+        let route = await dbConnection.findExecution(routeSql)
+
+        if ((customer == -1 || customer.length == 0) || (route == -1 || route.length == 0)) {
+            res.status(400).json({
+                message: "error",
+                isAdded: false
+            })
+        } else {
+            try {
+                const sql = orderQuary.addOrder()
+                dbConnection.insertExecutionDummy(sql, [customerId,price,date,routeId,
+                    parseInt(isDelivered),
+                    capacity
+                ]).then((result) => {
+                    if (result == -1) {
+                        res.status(400).json({
+                            message: "error",
+                            isAdded: false
+                        })
+                    } else {
+                        res.status(201).json({
+                            message: "success",
+                            isAdded: true
+                        })
+                    }
+
+                }).catch((err) => {
+                    throw new Error(err)
+                })
             } catch (error) {
                 res.status(400).json({
                     message: error.message,

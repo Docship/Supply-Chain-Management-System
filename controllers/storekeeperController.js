@@ -484,7 +484,7 @@ exports.addDeliveryComponents = async (req, res, next) => {
     } = req.body
 
     if (!truckNumber || !driverId || !assistantId || !routeId || !date || !time || !hours) {
-        res.send(401).json({
+        res.status(401).json({
             message: "component missing",
             isAdded: false
         })
@@ -500,7 +500,7 @@ exports.addDeliveryComponents = async (req, res, next) => {
             let route = await dbConnection.findExecution(routeSql)
             
             if ((truck == -1||truck.length == 0) || (assistant == -1||assistant.length == 0) || (route == -1||route.length == 0)) {
-                res.send(401).json({
+                res.status(401).json({
                     message: "wrong component id or id's or error sql",
                     isAdded: false
                 })
@@ -521,7 +521,7 @@ exports.addDeliveryComponents = async (req, res, next) => {
                 }
             }
         } catch {
-            res.send(401).json({
+            res.status(401).json({
                 message: "error when finding components",
                 isAdded: false
             })
