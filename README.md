@@ -1,2 +1,4 @@
 # Supply-Chain-Management-System
-#Database - quaries\tables.quary.js
+
+database-quaries\tables.quary.js
+
