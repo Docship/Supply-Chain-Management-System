@@ -17,6 +17,12 @@ app.use("/admin", require("./routes/admin.js"))
 app.use('/manager',require('./routes/manager.js'))
 app.use('/storekeeper',require('./routes/storekeeper.js'))
 
+app.use((req, res, next) => {
+  const error = new Error("Not found");
+  error.status = 404;
+  next(error);
+});
+
 // app.use("/assistant",require("./routes/assistant.js"))
 
 const PORT = process.env.PORT || 5000
