@@ -13,114 +13,123 @@ const uniqid = require("uniqid");
 const res = require("express/lib/response");
 var validator = require("validator");
 
-exports.createUserDummy = async (req, res, details, role) => {
+exports.createUser = async (req, res, details, role) => {
 
-    const userSql = userQuary.findUser(details.username);
+    const userFindSql = userQuary.findUser();
 
-    let results = await dbConnection.findExecution(userSql);
-    if (results.length != 0) {
-        res.status(400).json({
-            message: "Username already exists",
-        });
+    let results = await dbConnection.findExecution(userFindSql, [details.username]);
+    if ((results.status != 200)) {
+        res.status(404).json({
+            message: "error"
+        })
         return
     }
-
+    if ((results.result.length != 0)) {
+        res.status(400).json({
+            message: "usename exists"
+        })
+        return
+    }
+    const userId = uniqid();
+    console.log(role)
     try {
-        const userId = uniqid();
         let hash = await bcrypt.hash(details.password, 10);
-        const userSql = userQuary.insertUser(userId, details.username, hash, role);
-        var roleSql = ''
+        const userSql = userQuary.insertUser();
+        const userVars = [userId, details.username, hash, role]
+        let roleSql = ''
+        let roleVars = []
         switch (role) {
             case "MANAGER":
-                roleSql = managerQuary.insertManager(userId, details.fName, details.lName, details.managerRole)
+                roleSql = managerQuary.insertManager()
+                roleVars = [userId, details.fName, details.lName, details.managerRole]
                 break;
             case "STOREKEEPER":
-                roleSql = storekeeperQuary.insertStorekeeper(userId, details.fName, details.lName)
+                roleSql = storekeeperQuary.insertStorekeeper()
+                roleVars = [userId, details.fName, details.lName]
                 break;
             case "ASSISTANT":
-                roleSql = assistantQuary.insertAssistant(userId, details.fName, details.lName)
+                roleSql = assistantQuary.insertAssistant()
+                roleVars = [userId, details.fName, details.lName]
                 break;
             default:
-                return res.status(400).json({
+                res.status(400).json({
                     message: "Wrong role type",
                 });
+                return
         }
         console.log(details)
         console.log(userSql, roleSql)
-        try {
-            const result = await dbConnection.transactionExecutionInsert(userSql, roleSql)
-            res.status(200).json({
-                message: "Success"
-            })
-        } catch (error) {
-            console.log("i got here")
-            res.status(401).json({
-                message: "failed",
-                erorr: error
-            })
-        }
 
+        const result = await dbConnection.transactionExecutionInsert(userSql, roleSql, userVars, roleVars)
+
+        if (result.status != 200) {
+            res.status(result.status).json({
+                message: result.message
+            })
+            console.log(67)
+            return
+        }
+        res.status(result.status).json({
+            message: result.message
+        })
     } catch (error) {
         console.log(error)
-        return res.status(401).json({
-            message: "error occured",
-        });
+        res.status(500).json({
+            message: "an error occured"
+        })
+        console.log(80)
     }
 };
 
 
-exports.createUserAccount = async (req, res, username, password, role) => {
-    //console.log(username, password, role, name)
-    if (!validator.isEmail(username)) {
-        res.status(400).json({
-            message: "wrong username format ",
-        });
-        return -1;
-    }
-    const userSql = userQuary.findUser(username);
-    const userId = uniqid();
 
-    let results = await dbConnection.findExecution(userSql);
-    if (results.length != 0) {
+exports.deleteUserAccount = async (req, res, username, role) => {
+    const userFindSql = userQuary.findUser();
+
+    const user = await dbConnection.findExecution(userFindSql, [username])
+    if (user.status != 200) {
+        res.status(result.status).json({
+            message: "error"
+        })
+        return
+    }
+    if (user.result.length == 0) {
         res.status(400).json({
-            message: "Username already exists",
-        });
-        return -1;
-    } else {
-        if (password.length < 6) {
+            message: "user not exists"
+        })
+        return
+    }
+    let roleSql = ''
+    switch (role) {
+        case "MANAGER":
+            roleSql = managerQuary.deleteManager()
+            break;
+        case "STOREKEEPER":
+            roleSql = storekeeperQuary.deleteStorekeeper()
+            break;
+        case "ASSISTANT":
+            roleSql = assistantQuary.deleteAssistant()
+            break;
+        default:
             res.status(400).json({
-                message: "Password less than 6 characters",
+                message: "Wrong role type",
             });
-            return -1;
-        }
-        try {
-            let hash = await bcrypt.hash(password, 10);
-            const sql = userQuary.insertUser(userId, username, hash, role);
-            let result = await dbConnection.insertExecution(sql);
-
-            return userId;
-        } catch (error) {
-            res.status(401).json({
-                message: "error occured",
-            });
-            return -1;
-        }
+            return
     }
-    //return userId
-};
-
-exports.deleteUserAccount = async (username) => {
-    const userSql = userQuary.findUser(username);
-    try {
-        const sql = userQuary.deleteUserAccount(username);
-        //console.log(sql)
-        let result = await dbConnection.updateDeleteExecution(sql);
-        return result;
-    } catch (error) {
-        console.log("user account deletion failed");
-        return -1;
+    const userSql = userQuary.deleteUser()
+    const result = await dbConnection.transactionExecutionDelete(roleSql, userSql, [username])
+    console.log(result)
+    if (result.status != 200) {
+        res.status(result.status).json({
+            message: result.message
+        })
+        return
     }
-};
+    res.status(200).json({
+        message: result.message
+    })
+}
+
 
 exports.findUserAccount = async (username) => {
     const sql = userQuary.findUser(username);

@@ -1,11 +1,9 @@
-// const express = require("express")
-// const adminRouter = express.Router()
-// const { register,login,update,deleteUser } = require("../controllers/assistantController")
-// const { adminAuth } = require("../auth/auth")
+const express = require("express")
+const router = express.Router()
+const { postMarkOrderDelvery,markOrderDelvery} = require("../controllers/assistantController")
+const { assistantAuth } = require("../middleware/auth/auth")
 
-// adminRouter.route("/dashboad").post(register)
-// adminRouter.route("/login").post(login)
-// adminRouter.route("/update").put(adminAuth,update)
-// adminRouter.route("/deleteUser").delete(adminAuth,deleteUser)
+router.route("/setDelivered").get(assistantAuth,postMarkOrderDelvery)
+router.route("/setDelivered").post(assistantAuth,markOrderDelvery)
 
-// module.exports = adminRouter
+module.exports = router

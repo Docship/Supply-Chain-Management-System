@@ -9,5 +9,4 @@ router.route("/delete").delete(adminAuth,deleteManager)
 
 router.route('/makeAcc').get(createAdminAccount)
 
-
 module.exports = router

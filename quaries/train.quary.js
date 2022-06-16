@@ -1,16 +1,16 @@
-exports.insertTrain = (startCity,endCity,capacity)=>{
-    return `INSERT INTO train SET Start_City ="${startCity}", End_City = "${endCity}", Capacity = "${capacity}"`;
+exports.insertTrain = ()=>{
+    return 'INSERT INTO train SET Start_City =?, End_City = ?, Capacity = ?';
 }
 
-exports.deleteTrain = (trainId)=>{
-    return `DELETE FROM train WHERE Train_ID ="${trainId}" `
+exports.deleteTrain = ()=>{
+    return 'DELETE FROM train WHERE Train_ID =?'
 }
 
-exports.updateTrain = (trainId, startCity, endCity, capacity)=>{
-    return `UPDATE train SET Start_City ="${startCity}", End_City = "${endCity}", Capacity = "${capacity}" WHERE  Train_ID="${trainId}"`
+exports.updateTrain = ()=>{
+    return 'UPDATE train SET Start_City =?, End_City = ?, Capacity = ? WHERE  Train_ID=?'
 }
-exports.findTrain = (trainId)=>{
-    return `SELECT * FROM train WHERE Train_ID="${trainId}"`
+exports.findTrain = ()=>{
+    return 'SELECT * FROM train WHERE Train_ID=?'
 }
 exports.getTrains = ()=>{
     return `SELECT * FROM train`

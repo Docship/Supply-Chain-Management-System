@@ -2,7 +2,7 @@ const express = require("express")
 const router = express.Router()
 const {registerStorekeeper,updateStorekeeper,deleteStorekeeper,
     addTrain,updateTrain,deleteTrain,
-    postDeliveryComponents,deliveryComponents,
+    postDeliveryComponents,deliveryComponents,deleteDeliveryComponent,
     postAddTrainOrderDelivery,addTrainOrderDelivery,
 addOrder,postAddOrder} = require("../controllers/managerController.js")
 const {managerAuth} =require("../middleware/auth/auth.js")
@@ -17,6 +17,7 @@ router.route("/deleteTrain").delete(managerAuth,deleteTrain)
 
 router.route("/addDeliveryComponents").get(managerAuth,postDeliveryComponents)
 router.route("/addDeliveryComponents").post(managerAuth,deliveryComponents)
+router.route("/deleteDeliveryComponents").delete(managerAuth,deleteDeliveryComponent)
 
 router.route("/addTrainOrderDelivery").get(managerAuth,postAddTrainOrderDelivery)
 router.route("/addTrainOrderDelivery").post(managerAuth,addTrainOrderDelivery)
