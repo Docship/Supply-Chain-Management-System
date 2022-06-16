@@ -22,6 +22,13 @@ app.use((req, res, next) => {
 });
 
 
+app.use((req, res, next) => {
+  const error = new Error("Not found");
+  error.status = 404;
+  next(error);
+});
+
+
 const PORT = process.env.PORT || 5000
 
 const server = app.listen(PORT, () =>
