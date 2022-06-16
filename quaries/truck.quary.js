@@ -1,17 +1,17 @@
-exports.insertTruck = (truckNumber,capacity)=>{
-    return `INSERT INTO truck SET Truck_Number ="${truckNumber}", Capacity = "${capacity}"`;
+exports.insertTruck = ()=>{
+    return 'INSERT INTO truck SET Truck_Number =?, Capacity = ?'
 }
 
-exports.deleteTruck = (truckNumber)=>{
-    return `DELETE FROM truck WHERE Truck_Number ="${truckNumber}" `
+exports.deleteTruck = ()=>{
+    return 'DELETE FROM truck WHERE Truck_Number =?'
 }
 
-exports.updateTruck = (truckNumber,capacity)=>{
-    return `UPDATE truck SET Capacity = "${capacity}" WHERE  Truck_Number="${truckNumber}"`
+exports.updateTruck = ()=>{
+    return 'UPDATE truck SET Capacity = ? WHERE  Truck_Number=?'
 }
-exports.findTruck = (truckNumber)=>{
-    return `SELECT * FROM truck WHERE Truck_Number="${truckNumber}"`
+exports.findTruck = ()=>{
+    return 'SELECT * FROM truck WHERE Truck_Number=?'
 }
 exports.getTrucks = ()=>{
-    return `SELECT * FROM truck`
+    return 'SELECT * FROM truck'
 }

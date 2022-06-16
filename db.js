@@ -1,5 +1,8 @@
 const mysql = require('mysql');
 const util = require("util")
+require('dotenv').config()
+// console.log(process.env)
+
 
 const con = mysql.createConnection({
   host: process.env.DB_HOST,
@@ -8,140 +11,270 @@ const con = mysql.createConnection({
   database: process.env.DB_NAME
 });
 
+// const con = mysql.createConnection({
+//   host: 'localhost',
+//   user: 'root',
+//   password: '',
+//   database: 'delivery_managemant_system'
+// });
+
 const connectDB = async () => {
-  await con.connect(function (err) {
-    if (err) throw err;
+  await con.connect(function (error) {
+    if (error) throw error;
     console.log("Database Connected!");
   });
 }
 
-const query = util.promisify(con.query).bind(con);
-//table create
-// exports.tableCreate = async (sql) => {
-
-// }
-
-const insertExecution = (sql) => new Promise((resolve, reject) => {
+const insertExecution = (sql, vars) => new Promise((resolve, reject) => {
+  let res = {
+    status: 200,
+    message: "success",
+    result: ""
+  }
   try {
-    query(sql, (err, result) => {
-      if (err) {
-        resolve(-1)
-        console.log(err)
-        // reject(err.sqlMessage)
-        //throw err;
+    con.query(sql, vars, (error, result, fields) => {
+      if (error) {
+        console.log(error)
+        res.status = 404
+        res.message = "failed"
+        reject(res)
+        return
       }
-      resolve(result)
+      res.result = result
+      resolve(res)
     });
   } catch (error) {
     console.log(error)
-    reject(-1)
+    res.status = 404
+    res.message = "failed"
+    reject(res)
   }
 })
 
-const findExecution = (sql) => new Promise((resolve, reject) => {
+const findExecution = (sql, vars) => new Promise((resolve, reject) => {
+  let res = {
+    status: 200,
+    result: "success",
+    result: ""
+  }
   try {
-    query(sql, (err, result) => {
-      if (err) {
-        throw err;
+    con.query(sql, vars, (error, result) => {
+      if (error) {
+        console.log(error)
+        res.status = 404
+        res.message = "failed"
+        reject(res)
+        return
       }
-      //console.log("Update"+result)
-      resolve(result)
+      res.result = result
+      resolve(res)
     });
   } catch (error) {
     console.log(error)
-    reject(-1)
+    res.status = 404
+    res.message = "failed"
+    reject(res)
   }
 });
 
-const updateDeleteExecution = (sql) => new Promise((resolve, reject) => {
+const updateDeleteExecution = (sql, vars) => new Promise((resolve, reject) => {
+  let res = {
+    status: 200,
+    message: "success",
+    result: ""
+  }
   try {
-    query(sql, (err, result) => {
-      if (err) {
-        resolve(-1);
+    con.query(sql, vars, (error, result) => {
+      if (error) {
+        console.log(error)
+        res.status = 404
+        res.message = "failed"
+        reject(res)
+        return
       }
-      //console.log(result)
-      resolve(result)
+      res.result = result
+      resolve(res)
     });
   } catch (error) {
     console.log(error)
-    reject(-1)
+    res.status = 404
+    res.message = "failed"
+    reject(res)
   }
 })
 
-const transactionExecutionInsert = (sql_1, sql_2) => new Promise((resolve, reject) => {
+const transactionExecutionInsert = (sql_1, sql_2, userVars, roleVars) => new Promise((resolve, reject) => {
+  let res = {
+    status: 200,
+    message: "success",
+    result: ""
+  }
+  const sql1 = mysql.format(sql_1, userVars)
+  const sql2 = mysql.format(sql_2, roleVars)
   try {
-    con.beginTransaction(function (err) {
-      if (err) {
-        throw err;
+    con.beginTransaction(function (error) {
+      if (error) {
+        console.log(error)
+        res.status = 404
+        res.message = "failed"
+        reject(res)
       }
-      query(sql_1, function (error, results, fields) {
+      con.query(sql1, function (error, results, fields) {
         if (error) {
           return con.rollback(function () {
-            throw error;
+            console.log(error)
+            res.status = 404
+            res.message = "failed"
+            reject(res)
           });
         }
-        con.query(sql_2,function (error, results, fields) {
+        con.query(sql2, function (error, results, fields) {
           if (error) {
             return con.rollback(function () {
-              console.log("error passed here2222222")
-              throw error.sqlMessage;
+              console.log(error)
+              res.status = 404
+              res.message = "failed"
+              reject(res)
             });
           }
-          con.commit(function (err) {
-            if (err) {
+          con.commit(function (error) {
+            if (error) {
               return con.rollback(function () {
-                throw err;
+                console.log(error)
+                res.status = 404
+                res.message = "failed"
+                reject(res)
               });
             }
             console.log('success!');
-            resolve(1)
+            res.result = results
+            resolve(res)
           });
         });
       });
     });
   } catch (error) {
-    console.log("error passed here")
-    throw error
+    console.log(error)
+    res.status = 404
+    res.message = "failed"
+    reject(res)
   }
 })
 
-const transactionExecutionUpdate = (sql_1, sql_2,userId) => new Promise((resolve, reject) => {
+const transactionExecutionUpdate = (sql_1, sql_2, username) => new Promise((resolve, reject) => {
+  let res = {
+    status: 200,
+    message: "success",
+    result: ""
+  }
   try {
-    con.beginTransaction(function (err) {
-      if (err) {
-        throw err;
+    con.beginTransaction(function (error) {
+      if (error) {
+        console.log(error)
+        res.status = 404
+        res.message = "failed"
+        resolve(res)
       }
-      query(sql_1, function (error, results, fields) {
+      con.query(sql_1, username, function (error, results, fields) {
         if (error) {
           return con.rollback(function () {
-            throw error;
+            console.log(error)
+            res.status = 404
+            res.message = "failed"
+            resolve(res)
           });
         }
 
-        if (results.length != 0) {
-          con.query(sql_2, function (error, results, fields) {
+
+        con.query(sql_2, username, function (error, results, fields) {
+          if (error) {
+            return con.rollback(function () {
+              console.log(error)
+              res.status = 404
+              res.message = "failed"
+              resolve(res)
+            });
+          }
+          con.commit(function (error) {
             if (error) {
               return con.rollback(function () {
-                throw error;
+                console.log(error)
+                res.status = 404
+                res.message = "failed"
+                resolve(res)
               });
             }
-            con.commit(function (err) {
-              if (err) {
-                return con.rollback(function () {
-                  throw err;
-                });
-              }
-              console.log('success!');
-              resolve(true)
-            });
+            console.log('success!');
+            console.log(fields)
+            res.result = results
+            resolve(res)
           });
-        }else{
-          resolve(true)
-        }
+        });
       });
     });
   } catch (error) {
+    console.log(error)
+    res.status = 404
+    res.message = "failed"
+    resolve(res)
+  }
+})
 
+const transactionExecutionDelete = (sql_1, sql_2, username) => new Promise((resolve, reject) => {
+  let res = {
+    status: 200,
+    message: "success",
+    result: ""
+  }
+  try {
+    con.beginTransaction(function (error) {
+      if (error) {
+        console.log(error)
+        res.status = 404
+        res.message = "failed"
+        resolve(res)
+      }
+      con.query(sql_1, username, function (error, results, fields) {
+        if (error) {
+          return con.rollback(function () {
+            console.log(error)
+            res.status = 404
+            res.message = "failed"
+            resolve(res)
+          });
+        }
+          con.query(sql_2, username, function (error, results, fields) {
+            if (error) {
+              return con.rollback(function () {
+                console.log(error)
+                res.status = 404
+                res.message = "failed"
+                resolve(res)
+              });
+            }
+            con.commit(function (error) {
+              if (error) {
+                return con.rollback(function () {
+                  console.log(error)
+                  res.status = 404
+                  res.message = "failed"
+                  resolve(res)
+                });
+              }
+              console.log('success!');
+              console.log(fields)
+              res.result = results
+              resolve(res)
+            });
+          });
+        
+      });
+    });
+  } catch (error) {
+    console.log(error)
+    res.status = 404
+    res.message = "failed"
+    resolve(res)
   }
 })
 
@@ -152,5 +285,7 @@ module.exports = {
   updateDeleteExecution,
   findExecution,
   transactionExecutionInsert,
-  transactionExecutionUpdate
+  transactionExecutionUpdate,
+  transactionExecutionDelete
 }
+

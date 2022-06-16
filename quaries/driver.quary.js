@@ -1,16 +1,16 @@
-exports.insertDrivet = (fName,lName)=>{
-    return `INSERT INTO driver SET First_Name ="${fName}", Last_Name = "${lName}"`;
+exports.insertDriver = (fName,lName)=>{
+    return 'INSERT INTO driver SET First_Name =?, Last_Name = ?'
 }
 
-exports.deleteDriver = (driverId)=>{
-    return `DELETE FROM driver WHERE ID ="${driverId}" `
+exports.deleteDriver = ()=>{
+    return 'DELETE FROM driver WHERE ID =?'
 }
 
-exports.updateDriver = (driverId,fName,lName)=>{
-    return `UPDATE driver SET First_Name = "${fName}",Last_Name = "${lName}" WHERE  ID="${driverId}"`
+exports.updateDriver = ()=>{
+    return 'UPDATE driver SET First_Name = ? ,Last_Name = ? WHERE  ID=?'
 }
-exports.findDriver = (driverId)=>{
-    return `SELECT * FROM driver WHERE ID=${driverId}`
+exports.findDriver = ()=>{
+    return 'SELECT * FROM driver WHERE ID=?'
 }
 exports.getDrivers = ()=>{
     return `SELECT * FROM driver`

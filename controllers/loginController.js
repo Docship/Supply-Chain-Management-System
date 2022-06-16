@@ -16,86 +16,67 @@ exports.login = async (req, res, next) => {
         password
     } = req.body
     // Check if username and password is provided
-    console.log(username,password)
-    if (!username || !password ) {
+    console.log(username, password)
+    if (!username || !password) {
         return res.status(400).json({
             message: "Username or Password or Role not present",
-            isLogged:false
+            isLogged: false
         })
     }
+
+    const vars = [username]
+    const sql = userQuary.findUser()
+    const result = await dbConnection.findExecution(sql, vars)
+
+    //console.log(result)
+    if (result.status != 200) {
+        res.status(result.status).json({
+            message: "Login not successful"
+        })
+        return
+    }
+    if (result.result.length == 0) {
+        res.status(400).json({
+            message: "User not found"
+        })
+        return
+    }
+    console.log(result.result[0].User_ID)
+    const userId = result.result[0].User_ID
+    const userRole = result.result[0].Role
     try {
-        const sql = userQuary.findUser(username)
-        dbConnection.findExecution(sql).then((user) => {
-            console.log(user)
-            if (user.length == 0) {
-                res.status(401).json({
-                    message: "Login not successful",
-                    error: "User not found",
-                    isLogged:false
-                })
-            } else {
-                const userId = user[0].User_ID
-                const userRole = user[0].Role
-                bcrypt.compare(password, user[0].Password).then((result) => {
-                    if (result) {
-                        const maxAge = 3 * 60 * 60;
-                        const token = jwt.sign({
-                                id: userId,
-                                username:username,
-                                role: userRole
-                            },
-                            jwtSecrete, {
-                                expiresIn: maxAge, // 3hrs in sec
-                            }
-                        );
-                        res.cookie("jwt", token, {
-                            httpOnly: true,
-                            maxAge: maxAge * 1000, // 3hrs in ms
-                        });
-                        res.status(201).json({
-                            message: "User successfully Logged in",
-                            user: userId,
-                            isLogged:true
-                        });
-                        
-                    } else {
-                        res.status(400).json({
-                            message: "Login not succesful",
-                            user: userId,
-                            isLogged:false
-                        });
+        bcrypt.compare(password, result.result[0].Password).then((result) => {
+            if (result) {
+                const maxAge = 3 * 60 * 60;
+                const token = jwt.sign({
+                        id: userId,
+                        username: username,
+                        role: userRole
+                    },
+                    jwtSecrete, {
+                        expiresIn: maxAge, // 3hrs in sec
                     }
-                })
+                );
+                res.cookie("jwt", token, {
+                    httpOnly: true,
+                    maxAge: maxAge * 1000, // 3hrs in ms
+                });
+                res.status(200).json({
+                    message: "User successfully Logged in",
+                    user: userId
+                });
+
+            } else {
+                res.status(400).json({
+                    message: "Login not succesful",
+                    user: userId
+                });
             }
         })
     } catch (error) {
-        console.log("login");
-        res.status(400).json({
-            message: "An error occurred",
-            error: error.message,
+        console.log(error);
+        res.status(500).json({
+            message: "An error occurred"
         });
     }
-}
-
-// function adminDashboadLoader(res, user) {
-//     res.json({
-//         message: "Admin successfully Logged in",
-//         user: user._id,
-//     })
-// }
-
-async function assistantDashboadLoader(res, user) {
-    const orders = await Order.find({})
-    res.json({
-        user: user,
-        orders: orders
-    })
-}
-
-async function managerDashboadLoader(res, user) {
-    const trains = await Train.find({})
-    res.json({
-        user: user,
-        trains: trains
-    })
 }

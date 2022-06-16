@@ -1,21 +1,21 @@
-exports.findManagerByUserName = (username)=>{
-    return `SELECT * FROM staff_member WHERE User_ID = (select User_ID from user where Username = "${username}")`
+exports.findManagerByUserName = ()=>{
+    return 'SELECT * FROM staff_member WHERE User_ID = (select User_ID from user where Username = ?)'
 }
 exports.findManagerByUserId = (username)=>{
     return `SELECT * FROM staff_member WHERE User_ID ="${username}"`
 }
 
 //insert manager
-exports.insertManager = (userId,fName,lName,managerRole)=>{
-    return `INSERT INTO staff_member SET User_ID = (select User_ID from user where User_ID = "${userId}"), First_Name = "${fName}",Last_Name = "${lName}",Role = "${managerRole}"`;
+exports.insertManager = ()=>{
+    return 'INSERT INTO staff_member SET User_ID = (select User_ID from user where User_ID = ?), First_Name = ?,Last_Name = ?,Role = ?';
 }
 
 //delete manager
-exports.deleteManager = (username)=>{
-    return `DELETE FROM staff_member WHERE User_ID =(SELECT User_ID from user WHERE Username = "${username}")`
+exports.deleteManager = ()=>{
+    return 'DELETE FROM staff_member WHERE User_ID =(SELECT User_ID from user WHERE Username = ?)'
 }
 
 //update manager
-exports.updateManagerSQL = (fName,lName,role,username)=>{
-    return `UPDATE staff_member SET First_Name = "${fName}",Last_Name = "${lName}",role="${role}" WHERE User_ID =(SELECT User_ID from user WHERE Username = "${username}")`
+exports.updateManagerSQL = ()=>{
+    return 'UPDATE staff_member SET First_Name = ?,Last_Name = ?,role=? WHERE User_ID =(SELECT User_ID from user WHERE Username = ?)'
 }

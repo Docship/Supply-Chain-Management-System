@@ -1,16 +1,16 @@
-exports.insertRoute = (startCity,endCity)=>{
-    return `INSERT INTO route SET Start_City ="${startCity}", End_City = "${endCity}"`;
+exports.insertRoute = ()=>{
+    return 'INSERT INTO route SET Start_City = ?, End_City = ?';
 }
 
-exports.deleteRoute = (routeId)=>{
-    return `DELETE FROM route WHERE Route_ID ="${routeId}" `
+exports.deleteRoute = ()=>{
+    return 'DELETE FROM route WHERE Route_ID =?'
 }
 
-exports.updateRoute = (routeId,startCity,endCity)=>{
-    return `UPDATE route SET Start_City ="${startCity}", End_City = "${endCity}" WHERE  Route_ID="${routeId}"`
+exports.updateRoute = ()=>{
+    return 'UPDATE route SET Start_City =?, End_City = ? WHERE  Route_ID=?'
 }
-exports.findRoute = (routeId)=>{
-    return `SELECT * FROM route WHERE Route_ID=${routeId}`
+exports.findRoute = ()=>{
+    return 'SELECT * FROM route WHERE Route_ID=?'
 }
 exports.getRoutes = ()=>{
     return `SELECT * FROM route`

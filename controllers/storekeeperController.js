@@ -26,9 +26,13 @@ exports.registerAssistant = async (req, res, next) => {
         })
         return
     }
-    const details = {username:username,password:password,fName:fName,lName:lName}
-    userController.createUserDummy(req,res,details,"ASSISTANT").then(console.log("Finished execution of create manager Function")
-    )
+    const details = {
+        username: username,
+        password: password,
+        fName: fName,
+        lName: lName
+    }
+    userController.createUser(req, res, details, "ASSISTANT").then(console.log("Finished execution of create manager Function"))
 }
 
 
@@ -38,97 +42,56 @@ exports.updateAssistant = async (req, res, next) => {
         lName,
         username
     } = req.body
-    // Verifying if role and id is presnt
+
     if (!fName || !lName || !username) {
-        return res.status(400).json({
+        res.status(400).json({
             message: "first name,last name or username not present"
         })
-    } else {
-        const assistantFindSql = assistantQuary.findAssistantByUsername(username)
-        dbConnection.findExecution(assistantFindSql).then((result) => {
-            if (result.length != 0) {
-                const sql = assistantQuary.updateAssistant(fName, lName, username)
-                try {
-                    dbConnection.updateDeleteExecution(sql).then((result) => {
-                        //console.log(result)
-                        res.status(201).json({
-                            message: "Update successful"
-                        });
-                        return 0
-                    }).catch((error) => {
-                        console.log("4");
-                        res.status(400).json({
-                            message: "An error occurred",
-                            error: error.message
-                        });
-                        return -1
-                    })
-                } catch (error) {
-                    //console.log(error)
-                    console.log("3");
-                    res.status(400).json({
-                        message: "An error occurred",
-                        error: error.message
-                    })
-                    return -1
-                }
-            } else {
-                res.status(400).json({
-                    message: "Username not exists"
-                })
-                return -1
-            }
-        })
+        return
     }
+
+    const assistantFindSql = assistantQuary.findAssistantByUsername()
+
+    const result = await dbConnection.findExecution(assistantFindSql, [username])
+    if (result.status != 200) {
+        res.status(result.status).json({
+            message: result.message
+        })
+        return
+    }
+    if (result.result.length == 0) {
+        res.status(400).json({
+            message: "Username not exists"
+        })
+        return
+    }
+    const sql = assistantQuary.updateAssistant()
+    const vars = [fName, lName, username]
+    const result_f = await dbConnection.updateDeleteExecution(sql, vars)
+
+    if (result_f.status != 200) {
+        res.status(result_f.status).json({
+            message: result_f.message
+        })
+        return
+    }
+    res.status(result_f.status).json({
+        message: result_f.message
+    })
 }
 
 exports.deleteAssistant = async (req, res, next) => {
     const {
         username
-    } = req.body
+    } = req.body;
     if (!username) {
         res.status(400).json({
-            message: "username not present"
-        })
-        retuen - 1
-    } else {
-        const assistantFindSql = assistantQuary.findAssistantByUsername(username)
-        dbConnection.findExecution(assistantFindSql).then((result) => {
-            console.log(result)
-            if (result.length == 0) {
-                res.status(400).json({
-                    message: "Username not exists"
-                })
-                return -1
-            } else {
-                const sql = assistantQuary.deleteAssistant(username)
-                //console.log(sql)
-                try {
-                    dbConnection.updateDeleteExecution(sql).then(async () => {
-                        userController.deleteUserAccount(username).then((result) => {
-                            res.status(201).json({
-                                message: "User successfully deleted"
-                            })
-                        })
-                    }).catch((error) => {
-                        console.log("2");
-                        res.status(400).json({
-                            message: "An error occurred",
-                            error: error.message
-                        });
-                        return -1
-                    })
-                } catch (error) {
-                    console.log("1");
-                    res.status(400).json({
-                        message: "An error occurred",
-                        error: error.message
-                    })
-                    return -1
-                }
-            }
-        })
+            message: "username not present",
+        });
+        return;
     }
+    userController.deleteUserAccount(req, res, username, "ASSISTANT")
+        .then(console.log("Finished execution of delete storekeeper Function"));
 }
 
 exports.addDriver = async (req, res, next) => {
@@ -136,26 +99,26 @@ exports.addDriver = async (req, res, next) => {
         fName,
         lName
     } = req.body
-    const sql = driverQuary.insertDrivet(fName, lName)
     if (!fName || !lName) {
         res.status(400).json({
             message: "first name or last name not present"
         })
+        return
+    }
+
+    const sql = driverQuary.insertDriver()
+
+    const result = await dbConnection.insertExecution(sql, [fName, lName])
+    if (result.status == 200) {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
     } else {
-        try {
-            dbConnection.insertExecution(sql).then((result) => {
-                res.status(201).json({
-                    message: "driver added succesfully",
-                    isAdded: true
-                })
-            })
-        } catch (error) {
-            res.status(400).json({
-                message: "An error occurred",
-                error: error.message,
-                isAdded: false
-            })
-        }
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
     }
 }
 
@@ -169,32 +132,35 @@ exports.updateDriver = async (req, res, next) => {
         res.status(400).json({
             message: "first name, last name or driver id not present"
         })
-    } else {
-        const findDriver = driverQuary.findDriver(driverId)
-
-        let driver = await dbConnection.findExecution(findDriver)
-        if (driver.length == 0) {
-            res.status(400).json({
-                message: "Driver not exists"
-            })
-        } else {
-            const sql = driverQuary.updateDriver(driverId, fName, lName)
-            try {
-                dbConnection.updateDeleteExecution(sql).then((result) => {
-                    res.status(201).json({
-                        message: "driver updated succesfully",
-                        isUpdated: true
-                    })
-                })
-            } catch (error) {
-                res.status(400).json({
-                    message: "An error occurred",
-                    error: error.message,
-                    isUpdated: false
-                })
-            }
-        }
+        return
     }
+    const findDriver = driverQuary.findDriver()
+    let driver = await dbConnection.findExecution(findDriver, [driverId])
+    if (driver.result.length == 0) {
+        res.status(400).json({
+            message: "Driver not exists"
+        })
+        return
+    }
+    if (driver.status != 200) {
+        res.status(driver.status).json({
+            message: driver.message
+        })
+        return
+    }
+    const sql = driverQuary.updateDriver()
+    const vars = [fName, lName, driverId]
+    const result = await dbConnection.updateDeleteExecution(sql, vars)
+
+    if (result.status != 200) {
+        res.status(result.status).json({
+            message: result.message
+        })
+        return
+    }
+    res.status(result.status).json({
+        message: result.message
+    })
 }
 
 exports.deleteDriver = async (req, res, next) => {
@@ -206,30 +172,33 @@ exports.deleteDriver = async (req, res, next) => {
             message: "driver id not present"
         })
     } else {
-        const findDriver = driverQuary.findDriver(driverId)
+        const findDriver = driverQuary.findDriver()
 
-        let driver = await dbConnection.findExecution(findDriver)
-        if (driver.length == 0) {
+        let driver = await dbConnection.findExecution(findDriver, [driverId])
+        if (driver.status != 200) {
+            res.status(driver.status).json({
+                message: driver.message
+            })
+            return
+        }
+        if (driver.result.length == 0) {
             res.status(400).json({
                 message: "Driver not exists"
             })
-        } else {
-            const sql = driverQuary.deleteDriver(driverId)
-            try {
-                dbConnection.updateDeleteExecution(sql).then((result) => {
-                    res.status(201).json({
-                        message: "Driver deleted succesfully",
-                        isDeleted: true
-                    })
-                })
-            } catch (error) {
-                res.status(400).json({
-                    message: "An error occurred",
-                    error: error.message,
-                    isDeleted: false
-                })
-            }
+            return
         }
+        const sql = driverQuary.deleteDriver()
+        const vars = [driverId]
+        const result = await dbConnection.updateDeleteExecution(sql, vars)
+        if (result.status != 200) {
+            res.status(result.status).json({
+                message: result.message
+            })
+            return
+        }
+        res.status(200).json({
+            message: result.message
+        })
     }
 }
 
@@ -239,28 +208,40 @@ exports.addTruck = async (req, res, next) => {
         truckNumber,
         capacity
     } = req.body
-    const sql = truckQuary.insertTruck(truckNumber, capacity)
+
     if (!truckNumber || !capacity) {
         res.status(400).json({
-            message: "truck number or capacity not present",
-            isAdded: false
+            message: "truck number or capacity not present"
         })
-    } else {
-        try {
-            dbConnection.insertExecution(sql).then((result) => {
-                res.status(201).json({
-                    message: "truck added succesfully",
-                    isAdded: true
-                })
-            })
-        } catch (error) {
-            res.status(400).json({
-                message: "An error occurred",
-                error: error.message,
-                isAdded: false
-            })
-        }
+        return
     }
+    const findTruck = truckQuary.findTruck()
+
+    let truck = await dbConnection.findExecution(findTruck, [truckNumber])
+    if (truck.status != 200) {
+        res.status(truck.status).json({
+            message: truck.message
+        })
+        return
+    }
+    if (truck.result.length != 0) {
+        res.status(400).json({
+            message: "Truck already exists"
+        })
+        return
+    }
+    const sql = truckQuary.insertTruck()
+    const vars = [truckNumber, capacity]
+    const result = await dbConnection.insertExecution(sql, vars)
+
+    if (result.status != 200) {
+        res.status(result.status).json({
+            message: result.message
+        })
+    }
+    res.status(result.status).json({
+        message: result.message
+    })
 }
 
 exports.updateTruck = async (req, res, next) => {
@@ -272,32 +253,36 @@ exports.updateTruck = async (req, res, next) => {
         res.status(400).json({
             message: "truck number or capacity id not present"
         })
-    } else {
-        const findTruck = truckQuary.findTruck(truckNumber)
-
-        let truck = await dbConnection.findExecution(findTruck)
-        if (truck.length == 0) {
-            res.status(400).json({
-                message: "Truck not exists"
-            })
-        } else {
-            const sql = truckQuary.updateTruck(truckNumber, capacity)
-            try {
-                dbConnection.updateDeleteExecution(sql).then((result) => {
-                    res.status(201).json({
-                        message: "truck updated succesfully",
-                        isUpdated: true
-                    })
-                })
-            } catch (error) {
-                res.status(400).json({
-                    message: "An error occurred",
-                    error: error.message,
-                    isUpdated: false
-                })
-            }
-        }
+        return
     }
+    const findTruck = truckQuary.findTruck()
+
+    let truck = await dbConnection.findExecution(findTruck, [truckNumber])
+    if (truck.status != 200) {
+        res.status(truck.status).json({
+            message: truck.message
+        })
+        return
+    }
+    if (truck.result.length == 0) {
+        res.status(400).json({
+            message: "Truck not exists"
+        })
+        return
+    }
+    const sql = truckQuary.updateTruck()
+    const vars = [capacity, truckNumber]
+    const result = await dbConnection.updateDeleteExecution(sql, vars)
+    if (result.status != 200) {
+        res.status(result.status).json({
+            message: result.message
+        })
+        return
+    }
+
+    res.status(200).json({
+        message: result.message
+    })
 }
 
 exports.deleteTruck = async (req, res, next) => {
@@ -309,30 +294,31 @@ exports.deleteTruck = async (req, res, next) => {
             message: "truck number not present"
         })
     } else {
-        const findTruck = truckQuary.findTruck(truckNumber)
+        const findTruck = truckQuary.findTruck()
 
-        let truck = await dbConnection.findExecution(findTruck)
-        if (truck.length == 0) {
+        let truck = await dbConnection.findExecution(findTruck, [truckNumber])
+        if (truck.status != 200) {
+            res.status(truck.status).json({
+                message: truck.message
+            })
+        }
+        if (truck.result.length == 0) {
             res.status(400).json({
                 message: "Truck not exists"
             })
-        } else {
-            const sql = truckQuary.deleteTruck(truckNumber)
-            try {
-                dbConnection.updateDeleteExecution(sql).then((result) => {
-                    res.status(201).json({
-                        message: "Truck deleted succesfully",
-                        isDeleted: true
-                    })
-                })
-            } catch (error) {
-                res.status(400).json({
-                    message: "An error occurred",
-                    error: error.message,
-                    isDeleted: false
-                })
-            }
         }
+        const sql = truckQuary.deleteTruck()
+        const vars = [truckNumber]
+        const result = await dbConnection.updateDeleteExecution(sql, vars)
+
+        if (result.status != 200) {
+            res.status(result.status).json({
+                message: result.message
+            })
+        }
+        res.status(400).json({
+            message: result.message
+        })
     }
 }
 
@@ -341,28 +327,26 @@ exports.addRoute = async (req, res, next) => {
         startCity,
         endCity
     } = req.body
-    const sql = routeQuary.insertRoute(startCity, endCity)
     if (!startCity || !endCity) {
         res.status(400).json({
-            message: "start city or end city not present",
-            isAdded: false
+            message: "start city or end city not present"
         })
-    } else {
-        try {
-            dbConnection.insertExecution(sql).then((result) => {
-                res.status(201).json({
-                    message: "route added succesfully",
-                    isAdded: true
-                })
-            })
-        } catch (error) {
-            res.status(400).json({
-                message: "An error occurred",
-                error: error.message,
-                isAdded: false
-            })
-        }
+        return
     }
+    const sql = routeQuary.insertRoute()
+
+    const result = await dbConnection.insertExecution(sql, [startCity, endCity])
+
+    if (result.status != 200) {
+        res.status(result.status).json({
+            message: result.message
+        })
+        return
+    }
+    res.status(result.status).json({
+        message: result.message
+    })
+
 }
 
 exports.updateRoute = async (req, res, next) => {
@@ -376,30 +360,34 @@ exports.updateRoute = async (req, res, next) => {
             message: "route id, start city or end city not present"
         })
     } else {
-        const findRoute = routeQuary.findRoute(routeId)
+        const findRoute = routeQuary.findRoute()
 
-        let route = await dbConnection.findExecution(findRoute)
-        if (route.length == 0) {
+        let route = await dbConnection.findExecution(findRoute,[routeId])
+        if (route.status != 200) {
+            res.status(route.status).json({
+                message: route.message
+            })
+            return
+        }
+        if (route.result.length == 0) {
             res.status(400).json({
                 message: "Route not exists"
             })
-        } else {
-            const sql = routeQuary.updateRoute(routeId, startCity, endCity)
-            try {
-                dbConnection.updateDeleteExecution(sql).then((result) => {
-                    res.status(201).json({
-                        message: "route updated succesfully",
-                        isUpdated: true
-                    })
-                })
-            } catch (error) {
-                res.status(400).json({
-                    message: "An error occurred",
-                    error: error.message,
-                    isUpdated: false
-                })
-            }
+            return
         }
+        const sql = routeQuary.updateRoute()
+
+        const vars = [startCity, endCity, routeId]
+        const result_f = await dbConnection.updateDeleteExecution(sql,vars)
+        if (result_f.status != 200) {
+            res.status(result_f.status).json({
+                message: result_f.message
+            })
+            return
+        }
+        res.status(result_f.status).json({
+            message: result_f.message
+        })
     }
 }
 
@@ -411,64 +399,74 @@ exports.deleteRoute = async (req, res, next) => {
         res.status(400).json({
             message: "route id not present"
         })
-    } else {
-        const findRoute = routeQuary.findRoute(routeId)
-
-        let route = await dbConnection.findExecution(findRoute)
-        if (route.length == 0) {
-            res.status(400).json({
-                message: "Route not exists"
-            })
-        } else {
-            const sql = routeQuary.deleteRoute(routeId)
-            try {
-                dbConnection.updateDeleteExecution(sql).then((result) => {
-                    res.status(201).json({
-                        message: "Route deleted succesfully",
-                        isDeleted: true
-                    })
-                })
-            } catch (error) {
-                res.status(400).json({
-                    message: "An error occurred",
-                    error: error.message,
-                    isDeleted: false
-                })
-            }
-        }
+        return
     }
+    const findRoute = routeQuary.findRoute()
+
+    let route = await dbConnection.findExecution(findRoute, [routeId])
+    if (route.status != 200) {
+        res.status(route.status).json({
+            message: route.message
+        })
+        return
+    }
+    if (route.result.length == 0) {
+        res.status(400).json({
+            message: "Route not exists"
+        })
+        return
+    }
+
+    const sql = routeQuary.deleteRoute()
+    const vars = [routeId]
+    const result_f = await dbConnection.updateDeleteExecution(sql,vars)
+
+    if (result_f.status != 200) {
+        res.status(result_f.status).json({
+            message: result_f.message
+        })
+        return
+    }
+    res.status(result_f.status).json({
+        message: result_f.message
+    })
 }
 
 exports.postDeliveryComponents = async (req, res, next) => {
 
-    try {
-        const truckSql = truckQuary.getTrucks()
-        var trucks = await dbConnection.findExecution(truckSql)
 
-        const assistantSql = assistantQuary.getAssistants()
-        var assistants = await dbConnection.findExecution(assistantSql)
+    const truckSql = truckQuary.getTrucks()
+    var trucks = await dbConnection.findExecution(truckSql)
 
-        const routeSql = routeQuary.getRoutes()
-        var routes = await dbConnection.findExecution(routeSql)
+    const assistantSql = assistantQuary.getAssistants()
+    var assistants = await dbConnection.findExecution(assistantSql)
 
-        const driverSql = driverQuary.getDrivers()
-        var drivers = await dbConnection.findExecution(driverSql)
+    const routeSql = routeQuary.getRoutes()
+    var routes = await dbConnection.findExecution(routeSql)
 
-        res.status(201).json({
-            message:"success",
-            isDelivered: true,
-            trucks: trucks,
-            assistants: assistants,
-            drivers: drivers,
-            routes: routes
-        })
-    } catch (error) {
+    const driverSql = driverQuary.getDrivers()
+    var drivers = await dbConnection.findExecution(driverSql)
+
+    if ((trucks.status != 200) || (assistants.status != 200) || (routes.status != 200) || (drivers.status != 200)) {
         res.status(400).json({
-            message: "An error occurred",
-            error: error.message,
-            isDelivered: false
+            message: "Route not exists"
         })
+        return
     }
+    if ((trucks.result.length == 0) || (assistants.result.length == 0) || (routes.result.length == 0) || (drivers.result.length == 0)) {
+        res.status(400).json({
+            message: "Route not exists"
+        })
+        return
+    }
+    res.status(200).json({
+        message: "success",
+        trucks: trucks,
+        assistants: assistants,
+        drivers: drivers,
+        routes: routes
+    })
+
 }
 
 
@@ -484,72 +482,75 @@ exports.addDeliveryComponents = async (req, res, next) => {
     } = req.body
 
     if (!truckNumber || !driverId || !assistantId || !routeId || !date || !time || !hours) {
-        res.send(401).json({
+        res.status(401).json({
             message: "component missing",
             isAdded: false
         })
-    } else {
-        try {
-            const truckSql = truckQuary.findTruck(truckNumber)
-            let truck = await dbConnection.findExecution(truckSql)
-
-            const assistantSql = assistantQuary.findAssistantByAssistantId(assistantId)
-            let assistant = await dbConnection.findExecution(assistantSql)
-
-            const routeSql = routeQuary.findRoute(routeId)
-            let route = await dbConnection.findExecution(routeSql)
-            
-            if ((truck == -1||truck.length == 0) || (assistant == -1||assistant.length == 0) || (route == -1||route.length == 0)) {
-                res.send(401).json({
-                    message: "wrong component id or id's or error sql",
-                    isAdded: false
-                })
-            } else {
-                try {
-                    const sql = truckDeliveryAssignQuary.addDeliveryComponents(truckNumber, driverId, assistantId, routeId, date, time, hours)
-                    dbConnection.insertExecution(sql).then((result) => {
-                        res.status(201).json({
-                            message: "Delivery components added",
-                            isAdded: true
-                        })
-                    })
-                } catch (error) {
-                    res.status(400).json({
-                        message: "An error occurred",
-                        isAdded: false
-                    })
-                }
-            }
-        } catch {
-            res.send(401).json({
-                message: "error when finding components",
-                isAdded: false
-            })
-        }
+        return
     }
+    const truckSql = truckQuary.findTruck()
+    let truck = await dbConnection.findExecution(truckSql, [truckNumber])
+
+    const assistantSql = assistantQuary.findAssistantByAssistantId()
+    let assistant = await dbConnection.findExecution(assistantSql, [assistantId])
+
+    const routeSql = routeQuary.findRoute()
+    let route = await dbConnection.findExecution(routeSql, [routeId])
+
+    if ((truck.status != 200) || (assistant.status != 200) || (route.status != 200)) {
+        res.status(404).json({
+            message: "error"
+        })
+        return
+    }
+    if ((truck.result.length == 0) || (assistant.result.length == 0) || (route.result.length == 0)) {
+        res.status(400).json({
+            message: "component empty not exists"
+        })
+        return
+    }
+    const vars = [truckNumber, assistantId, routeId, driverId, date, time, hours]
+    const sql = truckDeliveryAssignQuary.addDeliveryComponents()
+    const result = await dbConnection.insertExecution(sql, vars)
+
+    if (result.status == 200) {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+        return
+    }
+    res.status(result.status).json({
+        message: result.message,
+        result: result.result
+    })
+
 }
 
-exports.postAddTruckOrderDelivery = async (req,res,next)=>{
-    try {
-        const orderSql = orderQuary.getOrders()
-        var orders = await dbConnection.findExecution(orderSql)
+exports.postAddTruckOrderDelivery = async (req, res, next) => {
 
-        const deliverySql = truckDeliveryAssignQuary.getDeliveryComponents()
-        var deliveries = await dbConnection.findExecution(deliverySql)
+    const orderSql = orderQuary.getOrders()
+    var orders = await dbConnection.findExecution(orderSql)
 
-        res.status(201).json({
-            message:"success",
-            isDelivered: true,
-            orders: orders,
-            deliveries: deliveries
+    const deliverySql = truckDeliveryAssignQuary.getDeliveryComponents()
+    var deliveries = await dbConnection.findExecution(deliverySql)
+    if ((orders.status != 200) || (deliveries.status != 200)) {
+        res.status(404).json({
+            message: "error"
         })
-    } catch (error) {
-        res.status(400).json({
-            message: "An error occurred",
-            error: error.message,
-            isDelivered: false
-        })
+        return
     }
+    if ((orders.result.length == 0) || (deliveries.result.length == 0)) {
+        res.status(400).json({
+            message: "component empty"
+        })
+        return
+    }
+    res.status(200).json({
+        message: "success",
+        orders: orders,
+        deliveries: deliveries
+    })
 }
 
 
@@ -559,38 +560,37 @@ exports.addTruckOrderDelivery = async (req, res, next) => {
         deliveryId
     } = req.body
 
-    try {
-        const orderSql = orderQuary.findOrder(orderId)
-        let order = await dbConnection.findExecution(orderSql)
+    const orderSql = orderQuary.findOrder()
+    let order = await dbConnection.findExecution(orderSql, [orderId])
 
-        const deliverySql = truckDeliveryAssignQuary.findDeliveryComponents(deliveryId)
-        let delivery = await dbConnection.findExecution(deliverySql)
+    const deliverySql = truckDeliveryAssignQuary.findDeliveryComponents()
+    let delivery = await dbConnection.findExecution(deliverySql, [deliveryId])
 
-        if (order.length == 0 || delivery.length == 0) {
-            res.status(400).json({
-                message: "wrong ids",
-                isAdded: false
-            })
-        } else {
-            try {
-                const sql = truckOrderDeliveryQuary.insertTruckOrderDelivery(orderId, deliveryId)
-                dbConnection.insertExecution(sql).then((result) => {
-                    res.status(201).json({
-                        message: "success",
-                        isAdded: true
-                    })
-                })
-            } catch (error) {
-                res.status(400).json({
-                    message: "An error occurred",
-                    isAdded: false
-                })
-            }
-        }
-    } catch (error) {
-        res.send(401).json({
-            message: "error when finding Ids",
-            isAdded: false
+    if ((order.status != 200) || (delivery.status != 200)) {
+        res.status(404).json({
+            message: "error"
         })
+        return
     }
+    if ((order.result.length == 0) || (delivery.result.length == 0)) {
+        res.status(400).json({
+            message: "component empty"
+        })
+        return
+    }
+    const sql = truckOrderDeliveryQuary.insertTruckOrderDelivery()
+    const vars = [orderId, deliveryId]
+    const result = await dbConnection.insertExecution(sql, vars)
+
+    if (result.status == 200) {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+        return
+    }
+    res.status(result.status).json({
+        message: result.message,
+        result: result.result
+    })
 }

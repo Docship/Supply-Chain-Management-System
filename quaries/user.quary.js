@@ -1,6 +1,6 @@
 //insert user
-exports.insertUser = (userId,username,password, role)=>{
-    return `INSERT INTO user(User_ID,Username,Password,Role) VALUES("${userId}","${username}","${password}","${role}")`;
+exports.insertUser = ()=>{
+    return 'INSERT INTO user(User_ID,Username,Password,Role) VALUES(?,?,?,?)';
 }
 
 exports.insertAdmin = (userId,username,password,name)=>{
@@ -10,12 +10,12 @@ exports.insertAdmin = (userId,username,password,name)=>{
 //find user
 
 //delete user
-exports.deleteUser = (username)=>{
-    return `DELETE FROM user WHERE Username = "${username}")`
+exports.deleteUser = ()=>{
+    return 'DELETE FROM user WHERE Username = ?'
 }
 
-exports.findUser = (username)=>{
-    return `SELECT * FROM user WHERE Username="${username}"`
+exports.findUser = ()=>{
+    return 'SELECT * FROM user WHERE Username=?'
 }
 
 exports.findUserByUserId = (userId)=>{
