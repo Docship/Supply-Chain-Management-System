@@ -14,57 +14,36 @@ exports.login = async (req, res, next) => {
     const {
         username,
         password,
-        role
+        // role
     } = req.body
     // Check if username and password is provided
     //console.log(username, password)
-    if (!username || !password ||!role) {
+    if (!username || !password ) {
         return res.status(400).json({
-            message: "Username Password or Role not present",
+            message: "Username Password not present",
             isLogged: false
         })
     }
 
     const vars = [username]
     
-    switch (role) {
-        case "ADMIN":
-            roleSql = adminQuary.findAdminByUserName()
-            break;
-        case "MANAGER":
-            roleSql = managerQuary.findManagerByUserName()
-            break;
-        case "STOREKEEPER":
-            roleSql = storekeeperQuary.findStorekeeperByUsername()
-            break;
-        case "ASSISTANT":
-            roleSql = assistantQuary.findAssistantByUsername()
-            break;
-        default:
-            res.status(400).json({
-                message: "Wrong role type",
-            });
-            return
-    }
-    const result = await dbConnection.findExecution(roleSql,vars)
-    // console.log(result)
-    if (result.status != 200) {
+    const sql = userQuary.findUser()
+    const userResult = await dbConnection.findExecution(sql, vars)
+
+    if (userResult.status != 200) {
         res.status(result.status).json({
             message: "Login not successful"
         })
         return
     }
-    if (result.result.length == 0) {
+    if (userResult.result.length == 0) {
         res.status(400).json({
             message: "User not found"
         })
         return
     }
-    const sql = userQuary.findUser()
-    const userResult = await dbConnection.findExecution(sql, vars)
+    console.log(userResult.result[0].Role)
 
-    // console.log(userResult)
-    // console.log(userResult.result[0].User_ID)
     const userId = userResult.result[0].User_ID
     const userRole = userResult.result[0].Role
     try {
@@ -87,8 +66,9 @@ exports.login = async (req, res, next) => {
                 });
                 res.status(200).json({
                     message: "User successfully Logged in",
-                    user: userId,
-                    role:role
+                    user:{username:username,
+                    userId: userId,
+                    role:userRole}
                 });
 
             } else {
