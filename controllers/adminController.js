@@ -101,3 +101,19 @@ exports.deleteManager = async (req, res, next) => {
     userController.deleteUserAccount(req,res,username,"MANAGER")
     .then(console.log("Finished execution of delete manager Function"));
 }
+
+exports.postManagers = async (req,res,next)=>{
+    const sql = managerQuary.getManagers()
+
+    const managers = await dbConnection.findExecution(sql)
+    if (managers.status != 200) {
+        res.status(orders.status).json({
+            message: orders.message
+        })
+        return
+    }
+    res.status(200).json({
+        message: "success",
+        result: managers
+    })
+}

@@ -19,3 +19,6 @@ exports.deleteManager = ()=>{
 exports.updateManagerSQL = ()=>{
     return 'UPDATE staff_member SET First_Name = ?,Last_Name = ?,role=? WHERE User_ID =(SELECT User_ID from user WHERE Username = ?)'
 }
+exports.getManagers = ()=>{
+    return 'SELECT * FROM staff_member'
+}
