@@ -1,0 +1,1137 @@
+{
+	"info": {
+		"_postman_id": "b671605c-1db0-4809-bce9-24f26140eb3f",
+		"name": "delivery managemant",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "19106614"
+	},
+	"item": [
+		{
+			"name": "admin requests",
+			"item": [
+				{
+					"name": "make Account admin",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/admin/makeAcc",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"makeAcc"
+							]
+						},
+						"description": "register admin"
+					},
+					"response": []
+				},
+				{
+					"name": "delete manager",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"sankalana@jk.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/admin/delete",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"delete"
+							]
+						},
+						"description": "delete manager"
+					},
+					"response": []
+				},
+				{
+					"name": "update manager",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"sankalana@jk.com\",\r\n    \"fName\":\"sanka\",\r\n    \"lName\":\"daminda\",\r\n    \"role\":\"delli\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/admin/update",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"update"
+							]
+						},
+						"description": "update manager"
+					},
+					"response": []
+				},
+				{
+					"name": "register manager",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"sankalana@jk.com\",\r\n    \"password\":\"123456\",\r\n    \"fName\":\"sankalana\",\r\n    \"lName\":\"banda\",\r\n    \"managerRole\":\"del\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/admin/register",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"admin",
+								"register"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": null,
+									"disabled": true
+								}
+							]
+						},
+						"description": "register manager"
+					},
+					"response": []
+				},
+				{
+					"name": "login admin",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"admin55@g.com\",\r\n    \"password\":\"123456\",\r\n    \"role\":\"ADMIN\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"login"
+							]
+						},
+						"description": "login admin"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "manager requests",
+			"item": [
+				{
+					"name": "storekeeper",
+					"item": [
+						{
+							"name": "delete storekeeper",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\":\"storekeeper1@g.com\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/manager/delete",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"manager",
+										"delete"
+									]
+								},
+								"description": "delete storekeeper"
+							},
+							"response": []
+						},
+						{
+							"name": "register storekeeper",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\":\"storekeeper1@g.com\",\r\n    \"password\":\"123456\",\r\n    \"fName\":\"dilusha\",\r\n    \"lName\":\"pulle\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/manager/register",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"manager",
+										"register"
+									]
+								},
+								"description": "register storekeeper"
+							},
+							"response": []
+						},
+						{
+							"name": "update storekeeper",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\":\"storekeeper1@g.com\",\r\n    \"fName\":\"fernandooo\",\r\n    \"lName\":\"pulle\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/manager/update",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"manager",
+										"update"
+									]
+								},
+								"description": "update storekeeper"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "train",
+					"item": [
+						{
+							"name": "register train",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"startCity\":\"kandy\",\r\n    \"endCity\":\"gannooruwa\",\r\n    \"capacity\":10000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/manager/registerTrain",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"manager",
+										"registerTrain"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update train",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"trainId\":1,\r\n    \"startCity\":\"kandy\",\r\n    \"endCity\":\"gannooruwa\",\r\n    \"capacity\":10000\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/manager/updateTrain",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"manager",
+										"updateTrain"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete train",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"trainId\":1\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/manager/deleteTrain",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"manager",
+										"deleteTrain"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "order",
+					"item": [
+						{
+							"name": "addOrder",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "http://localhost:5000/manager/addOrder",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"manager",
+										"addOrder"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "addOrder",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"customerId\":1,\r\n    \"price\":100,\r\n    \"date\":\"2022/02/2\",\r\n    \"routeId\":1,\r\n    \"isDelivered\":\"0\",\r\n    \"capacity\":100\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/manager/addOrder",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"manager",
+										"addOrder"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "login manager",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"sankalana15@jk.com\",\r\n    \"password\":\"123456\",\r\n    \"role\":\"MANAGER\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"login"
+							]
+						},
+						"description": "login manager"
+					},
+					"response": []
+				},
+				{
+					"name": "add delivery components",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/manager/addDeliveryComponents",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"manager",
+								"addDeliveryComponents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add delivery components",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"trainId\":2,\r\n    \"dateOfDepature\":\"2021/02/2\",\r\n    \"timeOfDepature\":\"9.00\",\r\n    \"transportHours\":10\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/manager/addDeliveryComponents",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"manager",
+								"addDeliveryComponents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "train order delivery",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/manager/addTrainOrderDelivery",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"manager",
+								"addTrainOrderDelivery"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "train order delivery",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderId\":1,\r\n    \"assignmentId\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/manager/addTrainOrderDelivery",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"manager",
+								"addTrainOrderDelivery"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "storekeeper requests",
+			"item": [
+				{
+					"name": "driver",
+					"item": [
+						{
+							"name": "add driver",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"fName\":\"pala\",\r\n    \"lName\":\"balla\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/storekeeper/registerDriver",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"storekeeper",
+										"registerDriver"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update driver",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"driverId\":1,\r\n    \"fName\":\"kalana\",\r\n    \"lName\":\"san\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/storekeeper/updateDriver",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"storekeeper",
+										"updateDriver"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete driver",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"driverId\":4\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/storekeeper/deleteDriver",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"storekeeper",
+										"deleteDriver"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "assistant",
+					"item": [
+						{
+							"name": "delete assistant",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\":\"assistant111@g.com\",\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/storekeeper/deleteA",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"storekeeper",
+										"deleteA"
+									]
+								},
+								"description": "delete assistant\r\n"
+							},
+							"response": []
+						},
+						{
+							"name": "update assistant",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\":\"assistant111@g.com\",\r\n    \"fName\":\"bimsara\",\r\n    \"lName\":\"bodaragama\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/storekeeper/updateA",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"storekeeper",
+										"updateA"
+									]
+								},
+								"description": "update assistant\r\n"
+							},
+							"response": []
+						},
+						{
+							"name": "register assistant",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"username\":\"assistant1@g.com\",\r\n    \"password\":\"123456\",\r\n    \"fName\":\"dilusha\",\r\n    \"lName\":\"pulle\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/storekeeper/registerA",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"storekeeper",
+										"registerA"
+									]
+								},
+								"description": "register assistant\r\n"
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "truck",
+					"item": [
+						{
+							"name": "add truck",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"truckNumber\":\"WP7050\",\r\n    \"capacity\":\"1000\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/storekeeper/registerTruck",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"storekeeper",
+										"registerTruck"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update truck",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"truckNumber\":\"WP7050\",\r\n    \"capacity\":\"2200\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/storekeeper/updateTruck",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"storekeeper",
+										"updateTruck"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete truck",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"truckNumber\":\"WP7050\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/storekeeper/deleteTruck",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"storekeeper",
+										"deleteTruck"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "route",
+					"item": [
+						{
+							"name": "add route",
+							"request": {
+								"method": "POST",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"startCity\":\"kandy\",\r\n    \"endCity\":\"gannooruwa\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/storekeeper/registerRoute",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"storekeeper",
+										"registerRoute"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "update route",
+							"request": {
+								"method": "PUT",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"routeId\":2,\r\n    \"startCity\":\"kurunagala\",\r\n    \"endCity\":\"colombo\"\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/storekeeper/updateRoute",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"storekeeper",
+										"updateRoute"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "delete route",
+							"request": {
+								"method": "DELETE",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n    \"routeId\":2\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "http://localhost:5000/storekeeper/deleteRoute",
+									"protocol": "http",
+									"host": [
+										"localhost"
+									],
+									"port": "5000",
+									"path": [
+										"storekeeper",
+										"deleteRoute"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "login storekeeper",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"storekeeper1@g.com\",\r\n    \"password\":\"123456\",\r\n    \"role\":\"STOREKEEPER\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"login"
+							]
+						},
+						"description": "login storekeeper"
+					},
+					"response": []
+				},
+				{
+					"name": "add delivery component",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"truckNumber\":\"WP7050\",\r\n    \"driverId\":1,\r\n    \"assistantId\":8,\r\n    \"routeId\":3,\r\n    \"date\":\"2022/02/01\",\r\n    \"time\":\"9.00\",\r\n    \"hours\":20\r\n}        ",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/storekeeper/addDeliveryComponents",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"storekeeper",
+								"addDeliveryComponents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "add delivery component",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:5000/storekeeper/addDeliveryComponents",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"storekeeper",
+								"addDeliveryComponents"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "truck order delivery",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderId\":1,\r\n    \"deliveryId\":1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/storekeeper/addTruckOrderDelivery",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"storekeeper",
+								"addTruckOrderDelivery"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "truck order delivery",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "http://localhost:5000/storekeeper/addTruckOrderDelivery",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"storekeeper",
+								"addTruckOrderDelivery"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "assistant requests",
+			"item": [
+				{
+					"name": "login assistant",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"username\":\"assistant1@g.com\",\r\n    \"password\":\"123456\",\r\n    \"role\":\"ASSISTANT\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5000/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "mark order delivered",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/assistant/setDelivered",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"assistant",
+								"setDelivered"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "mark order delivered",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5000/assistant/setDelivered",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5000",
+							"path": [
+								"assistant",
+								"setDelivered"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
