@@ -3,7 +3,7 @@ const jwtSecret ='231e07bf113b22fabaca321b96e015aea7e853d91de217d264891f54a3fbce
 
  
 exports.adminAuth = (req, res, next) => {
-  const token = req.cookies.jwt
+  const token = req.headers['authorization']
   if (token) {
     jwt.verify(token, jwtSecret, (err, decodedToken) => {
       if (err) {
@@ -34,7 +34,7 @@ exports.adminAuth = (req, res, next) => {
 }
 
 exports.managerAuth = (req, res, next) => {
-    const token = req.cookies.jwt
+    const token = req.headers['authorization']
     if (token) {
       jwt.verify(token, jwtSecret, (err, decodedToken) => {
         if (err) {
@@ -58,7 +58,7 @@ exports.managerAuth = (req, res, next) => {
   }
 
   exports.storekeeperAuth = (req, res, next) => {
-    const token = req.cookies.jwt
+    const token = req.headers['authorization']
     if (token) {
       jwt.verify(token, jwtSecret, (err, decodedToken) => {
         if (err) {
@@ -82,7 +82,7 @@ exports.managerAuth = (req, res, next) => {
   }
 
   exports.assistantAuth = (req, res, next) => {
-    const token = req.cookies.jwt
+    const token = req.headers['authorization']
     if (token) {
       jwt.verify(token, jwtSecret, (err, decodedToken) => {
         if (err) {

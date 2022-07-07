@@ -15,6 +15,7 @@ connectDB();
 app.use(cors({origin:process.env.CLIENT, credentials:true}));
 
 app.use((req, res, next) => {
+  console.log(req.headers['authorization'])
   res.header("Access-Control-Allow-Origin",process.env.CLIENT);
   res.header('Access-Control-Allow-Credentials', true)
   res.header(
