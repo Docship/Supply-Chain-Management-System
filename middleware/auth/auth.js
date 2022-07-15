@@ -3,6 +3,8 @@ const jwtSecret =
   "231e07bf113b22fabaca321b96e015aea7e853d91de217d264891f54a3fbce2f2831ea";
 
 exports.adminAuth = (req, res, next) => {
+  // const token = req.cookies.jwt
+
   const bToken = req.headers["authorization"];
   if (bToken) {
     let tokenArray = bToken.split(" ");
@@ -65,6 +67,7 @@ exports.managerAuth = (req, res, next) => {
 };
 
 exports.storekeeperAuth = (req, res, next) => {
+    // const token = req.cookies.jwt
   const bToken = req.headers["authorization"];
   if (bToken) {
     let tokenArray = bToken.split(" ");

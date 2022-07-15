@@ -23,6 +23,25 @@ exports.postMarkOrderDelvery = async (req, res) => {
     })
 }
 
+exports.postOrders=async (req,res,next)=>{
+    const sql = orderQuary.getOrders()
+    let result = await dbConnection.findExecution(sql)
+    console.log(result)
+    if (result.status == 200) {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    } else {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    }
+}
+
+
+
 exports.markOrderDelvery = async (req, res) => {
     const {
         orderId

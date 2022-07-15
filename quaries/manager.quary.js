@@ -12,7 +12,7 @@ exports.insertManager = ()=>{
 
 //delete manager
 exports.deleteManager = ()=>{
-    return 'DELETE FROM staff_member WHERE User_ID =(SELECT User_ID from user WHERE Username = ?)'
+    return 'DELETE FROM staff_member WHERE User_ID =?'
 }
 
 //update manager

@@ -90,15 +90,15 @@ exports.updateManager = async (req, res, next) => {
 
 exports.deleteManager = async (req, res, next) => {
     const {
-        username
+        userId
     } = req.body;
-    if (!username) {
+    if (!userId) {
         res.status(400).json({
             message: "username not present",
         });
         return
     }
-    userController.deleteUserAccount(req,res,username,"MANAGER")
+    userController.deleteUserAccount(req,res,userId,"MANAGER")
     .then(console.log("Finished execution of delete manager Function"));
 }
 

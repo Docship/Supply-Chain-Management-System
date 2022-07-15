@@ -15,7 +15,7 @@ exports.insertAssistant = ()=>{
 
 //delete Assistant
 exports.deleteAssistant = ()=>{
-    return 'DELETE FROM assistant WHERE User_ID =(SELECT User_ID from user WHERE Username = ?)'
+    return 'DELETE FROM assistant WHERE User_ID =?'
 }
 
 //update Assistant

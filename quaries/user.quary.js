@@ -18,8 +18,8 @@ exports.findUser = ()=>{
     return 'SELECT * FROM user WHERE Username=?'
 }
 
-exports.findUserByUserId = (userId)=>{
-    return `SELECT * FROM user WHERE User_ID="${userId}"`
+exports.findUserByUserId = ()=>{
+    return 'SELECT * FROM user WHERE User_ID=?'
 }
 
 

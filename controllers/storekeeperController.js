@@ -82,16 +82,33 @@ exports.updateAssistant = async (req, res, next) => {
 
 exports.deleteAssistant = async (req, res, next) => {
     const {
-        username
+        userId
     } = req.body;
-    if (!username) {
+    if (!userId) {
         res.status(400).json({
-            message: "username not present",
+            message: "userId not present",
         });
         return;
     }
-    userController.deleteUserAccount(req, res, username, "ASSISTANT")
+    userController.deleteUserAccount(req, res, userId, "ASSISTANT")
         .then(console.log("Finished execution of delete storekeeper Function"));
+}
+
+exports.postAssistants=async (req,res,next)=>{
+    const sql = assistantQuary.getAssistants()
+    let result = await dbConnection.findExecution(sql)
+    console.log(result)
+    if (result.status == 200) {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    } else {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    }
 }
 
 exports.addDriver = async (req, res, next) => {
@@ -201,6 +218,25 @@ exports.deleteDriver = async (req, res, next) => {
         })
     }
 }
+
+exports.postDrivers=async (req,res,next)=>{
+    const sql = driverQuary.getDrivers()
+    let result = await dbConnection.findExecution(sql)
+    console.log(result)
+    if (result.status == 200) {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    } else {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    }
+}
+
+
 
 
 exports.addTruck = async (req, res, next) => {
@@ -322,6 +358,24 @@ exports.deleteTruck = async (req, res, next) => {
     }
 }
 
+exports.postTrucks=async (req,res,next)=>{
+    const sql = truckQuary.getTrucks()
+    let result = await dbConnection.findExecution(sql)
+    console.log(result)
+    if (result.status == 200) {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    } else {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    }
+}
+
+
 exports.addRoute = async (req, res, next) => {
     const {
         startCity,
@@ -432,6 +486,25 @@ exports.deleteRoute = async (req, res, next) => {
     })
 }
 
+exports.postRoutes=async (req,res,next)=>{
+    const sql = routeQuary.getRoutes()
+    let result = await dbConnection.findExecution(sql)
+    console.log(result)
+    if (result.status == 200) {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    } else {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    }
+}
+
+
+
 exports.postDeliveryComponents = async (req, res, next) => {
 
 
@@ -524,7 +597,23 @@ exports.addDeliveryComponents = async (req, res, next) => {
         message: result.message,
         result: result.result
     })
+}
 
+exports.postAllDeliveryComponents=async (req,res,next)=>{
+    const sql = truckDeliveryAssignQuary.getDeliveryComponents()
+    let result = await dbConnection.findExecution(sql)
+    console.log(result)
+    if (result.status == 200) {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    } else {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    }
 }
 
 exports.postAddTruckOrderDelivery = async (req, res, next) => {
@@ -593,4 +682,21 @@ exports.addTruckOrderDelivery = async (req, res, next) => {
         message: result.message,
         result: result.result
     })
+}
+
+exports.postTrucksTruckOrderDelivery=async (req,res,next)=>{
+    const sql = truckOrderDeliveryQuary.getTruckOrderDelivery()
+    let result = await dbConnection.findExecution(sql)
+    console.log(result)
+    if (result.status == 200) {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    } else {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    }
 }

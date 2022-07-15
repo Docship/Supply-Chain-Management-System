@@ -83,10 +83,10 @@ exports.createUser = async (req, res, details, role) => {
 
 
 
-exports.deleteUserAccount = async (req, res, username, role) => {
-    const userFindSql = userQuary.findUser();
+exports.deleteUserAccount = async (req, res, userId, role) => {
+    const userFindSql = userQuary.findUserByUserId();
 
-    const user = await dbConnection.findExecution(userFindSql, [username])
+    const user = await dbConnection.findExecution(userFindSql, [userId])
     if (user.status != 200) {
         res.status(result.status).json({
             message: "error"
@@ -117,7 +117,7 @@ exports.deleteUserAccount = async (req, res, username, role) => {
             return
     }
     const userSql = userQuary.deleteUser()
-    const result = await dbConnection.transactionExecutionDelete(roleSql, userSql, [username])
+    const result = await dbConnection.transactionExecutionDelete(roleSql, userSql, [userId])
     console.log(result)
     if (result.status != 200) {
         res.status(result.status).json({
