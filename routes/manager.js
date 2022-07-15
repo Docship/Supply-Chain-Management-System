@@ -4,8 +4,9 @@ const {registerStorekeeper,updateStorekeeper,deleteStorekeeper,
     addTrain,updateTrain,deleteTrain,
     postDeliveryComponents,deliveryComponents,deleteDeliveryComponent,
     postAddTrainOrderDelivery,addTrainOrderDelivery,
-addOrder,postAddOrder} = require("../controllers/managerController.js")
+addOrder,postAddOrder,postTrains} = require("../controllers/managerController.js")
 const {managerAuth} =require("../middleware/auth/auth.js")
+const { route } = require("./login.js")
 
 router.route("/register").post(managerAuth,registerStorekeeper)
 router.route("/update").put(managerAuth,updateStorekeeper)
@@ -14,6 +15,7 @@ router.route("/delete").delete(managerAuth,deleteStorekeeper)
 router.route("/registerTrain").post(managerAuth,addTrain)
 router.route("/updateTrain").put(managerAuth,updateTrain)
 router.route("/deleteTrain").delete(managerAuth,deleteTrain)
+router.route('/trains').get(managerAuth,postTrains)
 
 router.route("/addDeliveryComponents").get(managerAuth,postDeliveryComponents)
 router.route("/addDeliveryComponents").post(managerAuth,deliveryComponents)

@@ -414,3 +414,20 @@ exports.addOrder = async (req, res, next) => {
         })
     }
 }
+
+exports.postTrains=async (req,res,next)=>{
+    const sql = trainQuary.getTrains()
+    let result = await dbConnection.findExecution(sql)
+    console.log(result)
+    if (result.status == 200) {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    } else {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    }
+}
