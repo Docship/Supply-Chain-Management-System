@@ -237,6 +237,23 @@ exports.postDeliveryComponents = async (req, res, next) => {
 exports.deleteDeliveryComponent =async (req, res, next)=>{
 
 }
+
+exports.postAllDeliveryComponents =async (req, res, next)=>{
+    const sql = trainDeliveryAssignQuary.getDeliveryComponents()
+    let result = await dbConnection.findExecution(sql)
+    console.log(result)
+    if (result.status == 200) {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    } else {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    }
+}
 exports.deliveryComponents = async (req, res, next) => {
     const {
         trainId,
@@ -339,6 +356,26 @@ exports.addTrainOrderDelivery = async (req, res, next) => {
     }
 }
 
+exports.postTrainOrderDeliveries=async (req,res,next)=>{
+    const sql = trainOrderDeliveryQuary.getTrainOrderDelivery()
+    let result = await dbConnection.findExecution(sql)
+    console.log(result)
+    if (result.status == 200) {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    } else {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    }
+}
+
+
+
+
 exports.postAddOrder = async (req, res, next) => {
     
         const customerSql = customerQuary.getCustomers()
@@ -415,8 +452,45 @@ exports.addOrder = async (req, res, next) => {
     }
 }
 
+exports.postOrders=async (req,res,next)=>{
+    const sql = orderQuary.getOrders()
+    let result = await dbConnection.findExecution(sql)
+    console.log(result)
+    if (result.status == 200) {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    } else {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    }
+}
+
 exports.postTrains=async (req,res,next)=>{
     const sql = trainQuary.getTrains()
+    let result = await dbConnection.findExecution(sql)
+    console.log(result)
+    if (result.status == 200) {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    } else {
+        res.status(result.status).json({
+            message: result.message,
+            result: result.result
+        })
+    }
+}
+
+
+
+
+exports.postStorekeepers=async (req,res,next)=>{
+    const sql = storekeeperQuary.getStorekeepers()
     let result = await dbConnection.findExecution(sql)
     console.log(result)
     if (result.status == 200) {

@@ -19,3 +19,6 @@ exports.deleteStorekeeper = ()=>{
 exports.updateStorekeeper = ()=>{
     return 'UPDATE storekeeper SET First_Name = ?,Last_Name = ? WHERE User_ID =(SELECT User_ID from user WHERE Username = ?)'
 }
+exports.getStorekeepers=()=>{
+    return `SELECT * FROM storekeeper`
+}

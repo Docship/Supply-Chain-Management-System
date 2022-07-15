@@ -10,3 +10,4 @@ exports.findDeliveryComponents = ()=>{
     return 'SELECT * FROM train_delivery_assign WHERE Assignment_ID=?'
 }
 
+

@@ -34,11 +34,11 @@ exports.adminAuth = (req, res, next) => {
 };
 
 exports.managerAuth = (req, res, next) => {
-  // const token = req.cookies.jwt
-  const bToken = req.headers["authorization"];
-  if (bToken) {
-    let tokenArray = bToken.split(" ");
-    const token = tokenArray[1];
+  const token = req.cookies.jwt
+  // const bToken = req.headers["authorization"];
+  if (token) {
+    // let tokenArray = bToken.split(" ");
+    // const token = tokenArray[1];
     jwt.verify(token, jwtSecret, (err, decodedToken) => {
       if (err) {
         return res
