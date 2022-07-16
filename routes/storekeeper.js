@@ -9,22 +9,22 @@ const {registerAssistant,updateAssistant,deleteAssistant,
 const {storekeeperAuth} =require("../middleware/auth/auth.js")
 
 router.route("/registerA").post(storekeeperAuth,registerAssistant)
-router.route("/updateA").put(storekeeperAuth,updateAssistant)
+router.route("/updateA").post(storekeeperAuth,updateAssistant)
 router.route("/deleteA").delete(storekeeperAuth,deleteAssistant)
 router.route("/assistants").get(storekeeperAuth,postAssistants)
 
 router.route("/registerDriver").post(storekeeperAuth,addDriver)
-router.route("/updateDriver").put(storekeeperAuth,updateDriver)
+router.route("/updateDriver").post(storekeeperAuth,updateDriver)
 router.route("/deleteDriver").delete(storekeeperAuth,deleteDriver)
 router.route("/drivers").get(storekeeperAuth,postDrivers)
 
 router.route("/registerTruck").post(storekeeperAuth,addTruck)
-router.route("/updateTruck").put(storekeeperAuth,updateTruck)
+router.route("/updateTruck").post(storekeeperAuth,updateTruck)
 router.route("/deleteTruck").delete(storekeeperAuth,deleteTruck)
 router.route("/trucks").get(storekeeperAuth,postTrucks)
 
 router.route("/registerRoute").post(storekeeperAuth,addRoute)
-router.route("/updateRoute").put(storekeeperAuth,updateRoute)
+router.route("/updateRoute").post(storekeeperAuth,updateRoute)
 router.route("/deleteRoute").delete(storekeeperAuth,deleteRoute)
 router.route("/routes").get(storekeeperAuth,postRoutes)
 

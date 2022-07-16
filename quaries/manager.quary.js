@@ -7,7 +7,7 @@ exports.findManagerByUserId = (username)=>{
 
 //insert manager
 exports.insertManager = ()=>{
-    return 'INSERT INTO staff_member SET User_ID = (select User_ID from user where User_ID = ?), First_Name = ?,Last_Name = ?,Role = ?';
+    return 'INSERT INTO staff_member SET User_ID = ?, First_Name = ?,Last_Name = ?,Role = ?)';
 }
 
 //delete manager

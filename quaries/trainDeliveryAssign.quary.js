@@ -9,5 +9,7 @@ exports.getDeliveryComponents = ()=>{
 exports.findDeliveryComponents = ()=>{
     return 'SELECT * FROM train_delivery_assign WHERE Assignment_ID=?'
 }
-
+exports.deleteOrderDeliveryByAssignId = ()=>{
+    return 'DELETE FROM train_delivery_assign WHERE Assignment_ID=?'
+}
 

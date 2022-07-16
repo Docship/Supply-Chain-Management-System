@@ -37,11 +37,11 @@ app.use('/storekeeper',require('./routes/storekeeper.js'))
 app.use("/assistant",require("./routes/assistant.js"))
 
 app.use((req, res, next) => {
+  console.log(req.path)
   const error = new Error("Not found");
   error.status = 404;
   next(error);
 });
-
 
 app.use((req, res, next) => {
   const error = new Error("Not found");

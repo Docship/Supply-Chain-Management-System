@@ -45,7 +45,7 @@ exports.createUser = async (req, res, details, role) => {
                 break;
             case "STOREKEEPER":
                 roleSql = storekeeperQuary.insertStorekeeper()
-                roleVars = [userId, details.fName, details.lName]
+                roleVars = [userId, details.fName, details.lName, details.city]
                 break;
             case "ASSISTANT":
                 roleSql = assistantQuary.insertAssistant()
@@ -57,6 +57,7 @@ exports.createUser = async (req, res, details, role) => {
                 });
                 return
         }
+
         console.log(details)
         console.log(userSql, roleSql)
 
@@ -85,7 +86,6 @@ exports.createUser = async (req, res, details, role) => {
 
 exports.deleteUserAccount = async (req, res, userId, role) => {
     const userFindSql = userQuary.findUserByUserId();
-
     const user = await dbConnection.findExecution(userFindSql, [userId])
     if (user.status != 200) {
         res.status(result.status).json({
@@ -116,8 +116,8 @@ exports.deleteUserAccount = async (req, res, userId, role) => {
             });
             return
     }
-    const userSql = userQuary.deleteUser()
-    const result = await dbConnection.transactionExecutionDelete(roleSql, userSql, [userId])
+    // const userSql = userQuary.deleteUser()
+    const result = await dbConnection.transactionExecutionDelete(roleSql, [userId])
     console.log(result)
     if (result.status != 200) {
         res.status(result.status).json({

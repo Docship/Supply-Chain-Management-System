@@ -24,5 +24,5 @@ exports.updateAssistant = ()=>{
 }
 
 exports.getAssistants = ()=>{
-    return `SELECT * FROM assistant`
+    return 'SELECT assistant.*,user.Username from assistant INNER JOIN user on user.User_ID=assistant.User_ID'
 }

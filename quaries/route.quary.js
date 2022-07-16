@@ -15,3 +15,6 @@ exports.findRoute = ()=>{
 exports.getRoutes = ()=>{
     return `SELECT * FROM route`
 }
+exports.getRoutesByStartCity=()=>{
+    return 'SELECT * FROM route WHERE Start_City=?'
+}

@@ -69,6 +69,7 @@ exports.managerAuth = (req, res, next) => {
 exports.storekeeperAuth = (req, res, next) => {
     // const token = req.cookies.jwt
   const bToken = req.headers["authorization"];
+  console.log("route: "+bToken)
   if (bToken) {
     let tokenArray = bToken.split(" ");
     const token = tokenArray[1];
@@ -83,6 +84,7 @@ exports.storekeeperAuth = (req, res, next) => {
             .status(401)
             .json({ message: "Not authorized", tokenExists: true });
         } else {
+          req.user = decodedToken
           next();
         }
       }
@@ -98,7 +100,7 @@ exports.storekeeperAuth = (req, res, next) => {
 };
 
 exports.assistantAuth = (req, res, next) => {
-  const bToken = req.cooki["authorization"];
+  const bToken = req.headers["authorization"];
   if (bToken) {
     let tokenArray = bToken.split(" ");
     const token = tokenArray[1];

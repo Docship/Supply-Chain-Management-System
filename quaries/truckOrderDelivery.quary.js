@@ -14,3 +14,7 @@ exports.insertTruckOrderDelivery = ()=>{
     return 'INSERT INTO truck_order_delivery SET Order_ID =?, Delivery_ID= ?'
 
 }
+
+exports.deleteTruckOrderDeliveryByAssignId = ()=>{
+    return 'DELETE FROM truck_order_delivery WHERE Delivery_ID=?'
+}

@@ -89,7 +89,7 @@ const updateDeleteExecution = (sql, vars) => new Promise((resolve, reject) => {
         console.log(error)
         res.status = 404
         res.message = "failed"
-        reject(res)
+        resolve(res)
         return
       }
       res.result = result
@@ -99,7 +99,7 @@ const updateDeleteExecution = (sql, vars) => new Promise((resolve, reject) => {
     console.log(error)
     res.status = 404
     res.message = "failed"
-    reject(res)
+    resolve(res)
   }
 })
 
@@ -220,7 +220,7 @@ const transactionExecutionUpdate = (sql_1, sql_2, username) => new Promise((reso
   }
 })
 
-const transactionExecutionDelete = (sql_1, sql_2, username) => new Promise((resolve, reject) => {
+const transactionExecutionDelete = (sql_1, username) => new Promise((resolve, reject) => {
   let res = {
     status: 200,
     message: "success",
@@ -243,7 +243,7 @@ const transactionExecutionDelete = (sql_1, sql_2, username) => new Promise((reso
             resolve(res)
           });
         }
-          con.query(sql_2, username, function (error, results, fields) {
+          con.commit(function (error) {
             if (error) {
               return con.rollback(function () {
                 console.log(error)
@@ -252,22 +252,11 @@ const transactionExecutionDelete = (sql_1, sql_2, username) => new Promise((reso
                 resolve(res)
               });
             }
-            con.commit(function (error) {
-              if (error) {
-                return con.rollback(function () {
-                  console.log(error)
-                  res.status = 404
-                  res.message = "failed"
-                  resolve(res)
-                });
-              }
-              console.log('success!');
-              console.log(fields)
-              res.result = results
-              resolve(res)
-            });
+            console.log('success!');
+            console.log(fields)
+            res.result = results
+            resolve(res)
           });
-        
       });
     });
   } catch (error) {
